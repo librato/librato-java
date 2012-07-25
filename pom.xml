@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <groupId>com.librato.metrics</groupId>
+    <artifactId>librato-java</artifactId>
+    <name>Librato Metrics API Java Library</name>
+    <version>0.0.1-SNAPSHOT</version>
+    <description>A set of libraries to facilitate posting data to the Librato Metrics Api</description>
+    <url>https://github.com/librato/librato-java</url>
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/librato/librato-java</url>
+        <connection>scm:git:git@github.com:librato/librato-java.git</connection>
+        <developerConnection>scm:git:git@github.com:librato/librato-java.git</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>mihasya</id>
+            <name>Mike Panchenko</name>
+            <email>m@mihasya.com</email>
+            <url>http://mihasya.com</url>
+            <timezone>-8</timezone>
+        </developer>
+        <developer>
+            <id>josephruscio</id>
+            <name>Joe Ruscio</name>
+            <email>joe@librato.com</email>
+            <timezone>-8</timezone>
+        </developer>
+    </developers>
+    <packaging>jar</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.3.3</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Default</threshold>
+                    <xmlOutput>true</xmlOutput>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ning</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>1.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.7</version>
+        </dependency>
+    </dependencies>
+</project>

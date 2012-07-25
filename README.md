@@ -1,6 +1,6 @@
 # librato-java
 
-Java language bindings for the Librato API.
+Java language bindings for the Librato Metrics API.
 
 ## Maven Dependency
 

@@ -90,7 +90,6 @@ public class LibratoBatch {
             builder.setBody(chunkStr);
             Future<Response> response = builder.execute();
             Response result = response.get(timeout, timeoutUnit);
-            System.out.println(String.format("Got a %d from api", result.getStatusCode()));
             if (result.getStatusCode() < 200 || result.getStatusCode() >= 300) {
                 LOG.error("Received an error from Librato API. Code : %d, Message: %s", result.getStatusCode(), result.getResponseBody());
             }

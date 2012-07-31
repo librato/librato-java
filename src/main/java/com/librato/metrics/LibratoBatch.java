@@ -21,8 +21,8 @@ public class LibratoBatch {
     private static final Logger LOG = LoggerFactory.getLogger(LibratoBatch.class);
     private static final String libVersion;
     static {
-        InputStream schemaIS = LibratoBatch.class.getClassLoader().getResourceAsStream("META-INF/maven/com.librato.metrics/librato-java/pom.properties");
-        BufferedReader b = new BufferedReader(new InputStreamReader(schemaIS));
+        InputStream pomIs = LibratoBatch.class.getClassLoader().getResourceAsStream("META-INF/maven/com.librato.metrics/librato-java/pom.properties");
+        BufferedReader b = new BufferedReader(new InputStreamReader(pomIs));
         String version = "unknown";
         try {
             String line = b.readLine();

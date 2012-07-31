@@ -6,6 +6,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +18,27 @@ import java.util.concurrent.TimeUnit;
  * A class that represents an aggregation of metric data from a given run
  */
 public class LibratoBatch {
+    private static final Logger LOG = LoggerFactory.getLogger(LibratoBatch.class);
+    private static final String libVersion;
+    static {
+        InputStream schemaIS = LibratoBatch.class.getClassLoader().getResourceAsStream("META-INF/maven/com.librato.metrics/librato-java/pom.properties");
+        BufferedReader b = new BufferedReader(new InputStreamReader(schemaIS));
+        String version = "unknown";
+        try {
+            String line = b.readLine();
+            while (line != null)  {
+                if (line.startsWith("version")) {
+                    version = line.split("=")[1];
+                    break;
+                }
+                line = b.readLine();
+            }
+        } catch (IOException e) {
+            LOG.error("Failure reading package version for librato-java", e);
+        }
+        libVersion = version;
+    }
+
     public static final int DEFAULT_BATCH_SIZE = 500;
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -26,13 +48,21 @@ public class LibratoBatch {
     private final int postBatchSize;
     private final long timeout;
     private final TimeUnit timeoutUnit;
+    private final String userAgent;
 
-    private static final Logger LOG = LoggerFactory.getLogger(LibratoBatch.class);
 
-    public LibratoBatch(int postBatchSize, long timeout, TimeUnit timeoutUnit) {
+    /**
+     *
+     * @param postBatchSize size at which to break up the batch
+     * @param timeout time allowed for post
+     * @param timeoutUnit unit for timeout
+     * @param agentIdentifier a string that identifies the poster (such as the name of a library/program using librato-java)
+     */
+    public LibratoBatch(int postBatchSize, long timeout, TimeUnit timeoutUnit, String agentIdentifier) {
         this.postBatchSize = postBatchSize;
         this.timeout = timeout;
         this.timeoutUnit = timeoutUnit;
+        this.userAgent = String.format("%s librato-java/%s", agentIdentifier, libVersion);
     }
 
     /**
@@ -88,6 +118,7 @@ public class LibratoBatch {
         try {
             String chunkStr = mapper.writeValueAsString(chunk);
             builder.setBody(chunkStr);
+            builder.setHeader("User-Agent", userAgent);
             Future<Response> response = builder.execute();
             Response result = response.get(timeout, timeoutUnit);
             if (result.getStatusCode() < 200 || result.getStatusCode() >= 300) {

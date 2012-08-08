@@ -111,7 +111,7 @@ public class LibratoBatch {
                 counterData = new ArrayList<Map<String, Object>>();
             }
         }
-        LOG.debug("Posted %d measurements", counter);
+        LOG.debug("Posted {} measurements", counter);
     }
 
     private void postPortion(AsyncHttpClient.BoundRequestBuilder builder, Map<String, Object> chunk) {
@@ -122,7 +122,7 @@ public class LibratoBatch {
             Future<Response> response = builder.execute();
             Response result = response.get(timeout, timeoutUnit);
             if (result.getStatusCode() < 200 || result.getStatusCode() >= 300) {
-                LOG.error("Received an error from Librato API. Code : %d, Message: %s", result.getStatusCode(), result.getResponseBody());
+                LOG.error("Received an error from Librato API. Code : {}, Message: {}", result.getStatusCode(), result.getResponseBody());
             }
         } catch (Exception e) {
             LOG.error("Unable to post to Librato API", e);

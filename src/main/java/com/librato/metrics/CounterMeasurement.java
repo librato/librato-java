@@ -3,6 +3,8 @@ package com.librato.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.librato.metrics.AssertionHelper.notNull;
+
 /**
  * User: mihasya
  * Date: 6/17/12
@@ -14,8 +16,8 @@ public class CounterMeasurement implements Measurement {
     private final Long count;
 
     public CounterMeasurement(String name, Long count) {
-        this.name = name;
-        this.count = count;
+        this.name = notNull(name);
+        this.count = notNull(count);
     }
 
     @Override

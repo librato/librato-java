@@ -3,8 +3,8 @@ package com.librato.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.lang.Double.isInfinite;
-import static java.lang.Double.isNaN;
+import static com.librato.metrics.AssertionHelper.notNull;
+import static com.librato.metrics.AssertionHelper.numeric;
 
 
 /**
@@ -25,12 +25,12 @@ public class MultiSampleGaugeMeasurement implements Measurement {
 
     public MultiSampleGaugeMeasurement(String name, Long count, Number sum, Number max, Number min,
                                        Number sum_squares) {
-        this.name = name;
-        this.count = count;
-        this.sum = numeric("sum", sum);
-        this.max = numeric("max", max);
-        this.min = numeric("max", min);
-        this.sum_squares = numeric("max", sum_squares);
+        this.name = notNull(name);
+        this.count = notNull(count);
+        this.sum = numeric(notNull(sum));
+        this.max = numeric(max);
+        this.min = numeric(min);
+        this.sum_squares = numeric(sum_squares);
     }
 
     @Override
@@ -53,17 +53,5 @@ public class MultiSampleGaugeMeasurement implements Measurement {
             result.put("sum_squares", sum_squares);
         }
         return result;
-    }
-
-    private Number numeric(String name, Number number) {
-        if (number == null) {
-            return null;
-        }
-
-        if (isNaN(number.doubleValue()) || isInfinite(number.doubleValue())) {
-            throw new IllegalArgumentException(number + " is not a numeric value for " + name);
-        }
-
-        return number;
     }
 }

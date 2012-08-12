@@ -30,12 +30,14 @@ public class APIUtilTest {
         illegalCharacters.add("[");
         illegalCharacters.add("*");
         illegalCharacters.add("+");
+        illegalCharacters.add("\t");
+        illegalCharacters.add(" ");
 
         StringBuilder testStringBuilder = new StringBuilder();
 
         testStringBuilder.append("com.less.important.nonunique.prefix.");
 
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 32; i++) {
             Collections.shuffle(illegalCharacters);
             testStringBuilder.append(important);
             testStringBuilder.append(illegalCharacters.get(0));

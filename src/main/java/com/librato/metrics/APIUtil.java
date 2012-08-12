@@ -10,7 +10,7 @@ public class APIUtil {
         public String apply(String name);
     }
 
-    private static final Pattern disallowed = Pattern.compile("([^A-Za-z0-9.:-_]|[\\[\\]])");
+    private static final Pattern disallowed = Pattern.compile("([^A-Za-z0-9.:-_]|[\\[\\]]|\\s)");
     private static final int LENGTH_LIMIT = 256;
 
     /**

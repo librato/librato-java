@@ -26,8 +26,8 @@ public class MultiSampleGaugeMeasurement implements Measurement {
     public MultiSampleGaugeMeasurement(String name, Long count, Number sum, Number max, Number min,
                                        Number sum_squares) {
         this.name = notNull(name);
-        this.count = notNull(count);
-        this.sum = numeric(notNull(sum));
+        this.count = count == null ? 0 : count;
+        this.sum = sum == null ? 0 : numeric(sum);
         this.max = numeric(max);
         this.min = numeric(min);
         this.sum_squares = numeric(sum_squares);

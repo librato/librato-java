@@ -2,6 +2,10 @@ package com.librato.metrics;
 
 import org.junit.Test;
 
+import java.util.Map;
+
+import static junit.framework.Assert.assertEquals;
+
 
 /**
  * User: mihasya
@@ -40,5 +44,11 @@ public class MultiSampleGaugeMeasurementTest {
         new MultiSampleGaugeMeasurement("testGauge", 12L, 2, 2, 2, Double.NaN);
     }
 
-
+    @Test
+    public void doesAcceptNullSumAndCount() throws Exception {
+        Measurement m = new MultiSampleGaugeMeasurement("testGauge", null, null, null, null, null);
+        Map<String, Number> map = m.toMap();
+        assertEquals(Long.valueOf(0), (Long)map.get("count"));
+        assertEquals(Integer.valueOf(0), (Integer)map.get("sum"));
+    }
 }

@@ -109,7 +109,7 @@ public class LibratoBatch {
                 gaugeData.add(data);
             }
             counter++;
-            if (counter % postBatchSize == 0 || !measurementIterator.hasNext()) {
+            if (counter % postBatchSize == 0 || (!measurementIterator.hasNext() && (!counterData.isEmpty() || !gaugeData.isEmpty()))) {
                 resultJson.put("counters", counterData);
                 resultJson.put("gauges", gaugeData);
                 postPortion(builder , resultJson);

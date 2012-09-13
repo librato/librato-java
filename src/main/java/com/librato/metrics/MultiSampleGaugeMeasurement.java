@@ -25,9 +25,12 @@ public class MultiSampleGaugeMeasurement implements Measurement {
 
     public MultiSampleGaugeMeasurement(String name, Long count, Number sum, Number max, Number min,
                                        Number sum_squares) {
+        if (count == null || count == 0) {
+            throw new IllegalArgumentException("The Librato API requires the count to be > 0 for complex metrics. See http://dev.librato.com/v1/post/metrics");
+        }
         this.name = notNull(name);
-        this.count = count == null ? 0 : count;
-        this.sum = sum == null ? 0 : numeric(sum);
+        this.count = count;
+        this.sum = numeric(sum);
         this.max = numeric(max);
         this.min = numeric(min);
         this.sum_squares = numeric(sum_squares);

@@ -6,12 +6,8 @@ import java.util.Map;
 import static com.librato.metrics.AssertionHelper.notNull;
 import static com.librato.metrics.AssertionHelper.numeric;
 
-
 /**
- * User: mihasya
- * Date: 6/17/12
- * Time: 10:06 PM
- * a class for representing a gauge reading that might come from multiple samples
+ * A class for representing a gauge reading that might come from multiple samples
  * <p/>
  * See http://dev.librato.com/v1/post/metrics for why some fields are optional
  */
@@ -43,7 +39,7 @@ public class MultiSampleGaugeMeasurement implements Measurement {
 
     @Override
     public Map<String, Number> toMap() {
-        Map<String, Number> result = new HashMap<String, Number>(5);
+        final Map<String, Number> result = new HashMap<String, Number>(5);
         result.put("count", count);
         result.put("sum", sum);
         if (max != null) {

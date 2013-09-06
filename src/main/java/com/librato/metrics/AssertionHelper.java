@@ -5,17 +5,16 @@ import static java.lang.Double.isNaN;
 
 final class AssertionHelper {
     private AssertionHelper() {
+        // helper class, do not instantiate
     }
 
     static Number numeric(Number number) {
         if (number == null) {
             return null;
         }
-
         if (isNaN(number.doubleValue()) || isInfinite(number.doubleValue())) {
             throw new IllegalArgumentException(number + " is not a numeric value");
         }
-
         return number;
     }
 
@@ -23,7 +22,6 @@ final class AssertionHelper {
         if (object == null) {
             throw new IllegalArgumentException("Parameter may not be null");
         }
-
         return object;
     }
 }

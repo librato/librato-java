@@ -6,12 +6,6 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * User: mihasya
- * Date: 7/1/12
- * Time: 5:17 PM
- * Test a simple gauge reading
- */
 public class SingleValueGaugeMeasurementTest {
     @Test
     public void testCorrectMap() throws Exception {

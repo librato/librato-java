@@ -6,12 +6,6 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 
-/**
- * User: mihasya
- * Date: 7/1/12
- * Time: 5:10 PM
- * test a counter reading
- */
 public class CounterMeasurementTest {
     @Test
     public void testCorrectMap() throws Exception {

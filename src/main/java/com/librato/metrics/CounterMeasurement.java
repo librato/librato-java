@@ -6,9 +6,6 @@ import java.util.Map;
 import static com.librato.metrics.AssertionHelper.notNull;
 
 /**
- * User: mihasya
- * Date: 6/17/12
- * Time: 10:25 PM
  * Represents a reading from a counter
  */
 public class CounterMeasurement implements Measurement {
@@ -27,7 +24,7 @@ public class CounterMeasurement implements Measurement {
 
     @Override
     public Map<String, Number> toMap() {
-        Map<String, Number> value = new HashMap<String, Number>(1);
+        final Map<String, Number> value = new HashMap<String, Number>(1);
         value.put("value", count);
         return value;
     }

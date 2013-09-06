@@ -2,16 +2,7 @@ package com.librato.metrics;
 
 import org.junit.Test;
 
-import java.util.Map;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-
-
 /**
- * User: mihasya
- * Date: 7/1/12
- * Time: 5:20 PM
  * Verify that all the advanced details are filled in that are available
  */
 public class MultiSampleGaugeMeasurementTest {

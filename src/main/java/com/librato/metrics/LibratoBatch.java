@@ -1,7 +1,5 @@
 package com.librato.metrics;
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.Response;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,21 +8,25 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static com.librato.metrics.HttpPoster.Response;
+import static com.librato.metrics.Preconditions.checkNotNull;
+
 /**
  * A class that represents an aggregation of metric data from a given run
  */
 @SuppressWarnings("unused")
 public class LibratoBatch {
+    public static final int DEFAULT_BATCH_SIZE = 500;
     private static final Logger LOG = LoggerFactory.getLogger(LibratoBatch.class);
     private static final String LIB_VERSION = Versions.getVersion("META-INF/maven/com.librato.metrics/librato-java/pom.properties", LibratoBatch.class);
-    @SuppressWarnings("unused") public static final int DEFAULT_BATCH_SIZE = 500;
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final List<Measurement> measurements = new ArrayList<Measurement>();
     private final int postBatchSize;
-    private final APIUtil.Sanitizer sanitizer;
+    private final Sanitizer sanitizer;
     private final long timeout;
     private final TimeUnit timeoutUnit;
     private final String userAgent;
+    private final HttpPoster httpPoster;
 
     /**
      * Constructor
@@ -34,18 +36,24 @@ public class LibratoBatch {
      * @param timeout time allowed for post
      * @param timeoutUnit unit for timeout
      * @param agentIdentifier a string that identifies the poster (such as the name of a library/program using librato-java)
+     * @param httpPoster the {@link com.librato.metrics.HttpPoster} that will send the data to Librato
      */
-    public LibratoBatch(int postBatchSize, final APIUtil.Sanitizer sanitizer, long timeout, TimeUnit timeoutUnit, String agentIdentifier) {
+    public LibratoBatch(int postBatchSize,
+                        final Sanitizer sanitizer,
+                        long timeout,
+                        TimeUnit timeoutUnit,
+                        String agentIdentifier,
+                        HttpPoster httpPoster) {
         this.postBatchSize = postBatchSize;
-        this.sanitizer = new APIUtil.Sanitizer() {
-            @Override
+        this.sanitizer = new Sanitizer() {
             public String apply(String name) {
-                return APIUtil.lastPassSanitizer.apply(sanitizer.apply(name));
+                return Sanitizer.LAST_PASS.apply(sanitizer.apply(name));
             }
         };
         this.timeout = timeout;
         this.timeoutUnit = timeoutUnit;
         this.userAgent = String.format("%s librato-java/%s", agentIdentifier, LIB_VERSION);
+        this.httpPoster = checkNotNull(httpPoster);
     }
 
     /**
@@ -63,19 +71,19 @@ public class LibratoBatch {
         measurements.add(new SingleValueGaugeMeasurement(name, value));
     }
 
-    public void post(AsyncHttpClient.BoundRequestBuilder builder, String source, long epoch) {
-        Map<String, Object> resultJson = new HashMap<String, Object>();
-        resultJson.put("source", source);
-        resultJson.put("measure_time", epoch);
-        List<Map<String, Object>> gaugeData = new ArrayList<Map<String, Object>>();
-        List<Map<String, Object>> counterData = new ArrayList<Map<String, Object>>();
+    public void post(String source, long epoch) {
+        final Map<String, Object> payloadMap = new HashMap<String, Object>();
+        payloadMap.put("source", source);
+        payloadMap.put("measure_time", epoch);
+        final List<Map<String, Object>> gaugeData = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> counterData = new ArrayList<Map<String, Object>>();
 
         int counter = 0;
 
-        Iterator<Measurement> measurementIterator = measurements.iterator();
+        final Iterator<Measurement> measurementIterator = measurements.iterator();
         while (measurementIterator.hasNext()) {
-            Measurement measurement = measurementIterator.next();
-            Map<String, Object> data = new HashMap<String, Object>();
+            final Measurement measurement = measurementIterator.next();
+            final Map<String, Object> data = new HashMap<String, Object>();
             data.put("name", sanitizer.apply(measurement.getName()));
             data.putAll(measurement.toMap());
             if (measurement instanceof CounterMeasurement) {
@@ -85,27 +93,29 @@ public class LibratoBatch {
             }
             counter++;
             if (counter % postBatchSize == 0 || (!measurementIterator.hasNext() && (!counterData.isEmpty() || !gaugeData.isEmpty()))) {
-                resultJson.put("counters", counterData);
-                resultJson.put("gauges", gaugeData);
-                postPortion(builder , resultJson);
-                resultJson.remove("gauges");
-                resultJson.remove("counters");
-                gaugeData = new ArrayList<Map<String, Object>>();
-                counterData = new ArrayList<Map<String, Object>>();
+                final String countersKey = "counters";
+                final String gaugesKey = "gauges";
+
+                payloadMap.put(countersKey, counterData);
+                payloadMap.put(gaugesKey, gaugeData);
+                postPortion(payloadMap);
+                payloadMap.remove(gaugesKey);
+                payloadMap.remove(countersKey);
+                gaugeData.clear();
+                counterData.clear();
             }
         }
         LOG.debug("Posted {} measurements", counter);
     }
 
-    private void postPortion(AsyncHttpClient.BoundRequestBuilder builder, Map<String, Object> chunk) {
+    private void postPortion(Map<String, Object> chunk) {
         try {
-            String chunkStr = mapper.writeValueAsString(chunk);
-            builder.setBody(chunkStr);
-            builder.setHeader("User-Agent", userAgent);
-            Future<Response> response = builder.execute();
-            Response result = response.get(timeout, timeoutUnit);
-            if (result.getStatusCode() < 200 || result.getStatusCode() >= 300) {
-                LOG.error("Received an error from Librato API. Code : {}, Message: {}", result.getStatusCode(), result.getResponseBody());
+            final String payload = OBJECT_MAPPER.writeValueAsString(chunk);
+            final Future<Response> future = httpPoster.post(userAgent, payload);
+            final Response response = future.get(timeout, timeoutUnit);
+            final int statusCode = response.getStatusCode();
+            if (statusCode < 200 || statusCode >= 300) {
+                LOG.error("Received an error from Librato API. Code : {}, Message: {}", statusCode, response.getBody());
             }
         } catch (Exception e) {
             LOG.error("Unable to post to Librato API", e);

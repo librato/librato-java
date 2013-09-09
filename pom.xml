@@ -9,7 +9,7 @@
     <groupId>com.librato.metrics</groupId>
     <artifactId>librato-java</artifactId>
     <name>Librato Metrics API Java Library</name>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <description>A set of libraries to facilitate posting data to the Librato Metrics Api</description>
     <url>https://github.com/librato/librato-java</url>
     <licenses>
@@ -23,7 +23,8 @@
         <url>https://github.com/librato/librato-java</url>
         <connection>scm:git:git@github.com:librato/librato-java.git</connection>
         <developerConnection>scm:git:git@github.com:librato/librato-java.git</developerConnection>
-    </scm>
+      <tag>librato-java-0.1.0</tag>
+  </scm>
     <build>
         <plugins>
             <plugin>

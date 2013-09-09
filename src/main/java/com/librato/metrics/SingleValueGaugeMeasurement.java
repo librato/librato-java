@@ -16,8 +16,12 @@ public class SingleValueGaugeMeasurement implements Measurement {
     private final Number reading;
 
     public SingleValueGaugeMeasurement(String name, Number reading) {
-        this.name = checkNotNull(name);
-        this.reading = checkNumeric(checkNumeric(reading));
+        try {
+            this.name = checkNotNull(name);
+            this.reading = checkNumeric(checkNumeric(reading));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid single-gauge measurement name=" + name, e);
+        }
     }
 
     public String getName() {

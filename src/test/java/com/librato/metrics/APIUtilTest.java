@@ -9,6 +9,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class APIUtilTest {
     /**
      * Take a string that's a little too long even without the special chars; verify that the extra gets lopped off the front
@@ -16,7 +17,7 @@ public class APIUtilTest {
      */
     @Test
     public void testRemovingIllegalMethods() throws Exception {
-        APIUtil.Sanitizer sanitizer = APIUtil.lastPassSanitizer;
+        Sanitizer sanitizer = Sanitizer.LAST_PASS;
         String important = "reallyclutchinfo";
         List<String> illegalCharacters = Arrays.asList("$", "]", "[", "*", "+", "\t", " ");
 

@@ -3,22 +3,26 @@ package com.librato.metrics;
 import static java.lang.Double.isInfinite;
 import static java.lang.Double.isNaN;
 
-final class AssertionHelper {
-    private AssertionHelper() {
+/**
+ * Helpful static methods, kinda like Guava.
+ */
+final class Preconditions {
+    private Preconditions() {
         // helper class, do not instantiate
     }
 
-    static Number numeric(Number number) {
+    static Number checkNumeric(Number number) {
         if (number == null) {
             return null;
         }
-        if (isNaN(number.doubleValue()) || isInfinite(number.doubleValue())) {
+        final double doubleValue = number.doubleValue();
+        if (isNaN(doubleValue) || isInfinite(doubleValue)) {
             throw new IllegalArgumentException(number + " is not a numeric value");
         }
         return number;
     }
 
-    static <T> T notNull(T object) {
+    static <T> T checkNotNull(T object) {
         if (object == null) {
             throw new IllegalArgumentException("Parameter may not be null");
         }

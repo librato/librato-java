@@ -28,7 +28,7 @@ public class Versions {
      */
     public static String getVersion(String path, Class<?> klass) {
         try {
-            InputStream in = klass.getClassLoader().getResourceAsStream(path);
+            final InputStream in = klass.getClassLoader().getResourceAsStream(path);
             if (in != null) {
                 try {
                     final BufferedReader reader = new BufferedReader(new InputStreamReader(in));

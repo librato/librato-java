@@ -2,6 +2,8 @@ package com.librato.metrics;
 
 import com.ning.http.util.Base64;
 
+import java.nio.charset.Charset;
+
 public class Authorization {
     private Authorization() {
         // utility class, do not construct
@@ -21,6 +23,6 @@ public class Authorization {
         if (token == null || "".equals(token)) {
             throw new IllegalArgumentException("Token must be specified");
         }
-        return String.format("Basic %s", Base64.encode((username + ":" + token).getBytes()));
+        return String.format("Basic %s", Base64.encode((username + ":" + token).getBytes(Charset.forName("UTF-8"))));
     }
 }

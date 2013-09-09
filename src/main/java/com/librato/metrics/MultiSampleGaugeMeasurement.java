@@ -25,15 +25,19 @@ public class MultiSampleGaugeMeasurement implements Measurement {
                                        Number max,
                                        Number min,
                                        Number sumSquares) {
-        if (count == null || count == 0) {
-            throw new IllegalArgumentException("The Librato API requires the count to be > 0 for complex metrics. See http://dev.librato.com/v1/post/metrics");
+        try {
+            if (count == null || count == 0) {
+                throw new IllegalArgumentException("The Librato API requires the count to be > 0 for complex metrics. See http://dev.librato.com/v1/post/metrics");
+            }
+            this.name = checkNotNull(name);
+            this.count = count;
+            this.sum = checkNumeric(sum);
+            this.max = checkNumeric(max);
+            this.min = checkNumeric(min);
+            this.sumSquares = checkNumeric(sumSquares);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid multi-sample gauge measurement name=" + name, e);
         }
-        this.name = checkNotNull(name);
-        this.count = count;
-        this.sum = checkNumeric(sum);
-        this.max = checkNumeric(max);
-        this.min = checkNumeric(min);
-        this.sumSquares = checkNumeric(sumSquares);
     }
 
     public String getName() {

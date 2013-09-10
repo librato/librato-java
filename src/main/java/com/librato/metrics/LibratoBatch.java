@@ -20,7 +20,7 @@ public class LibratoBatch {
     private static final Logger LOG = LoggerFactory.getLogger(LibratoBatch.class);
     private static final String LIB_VERSION = Versions.getVersion("META-INF/maven/com.librato.metrics/librato-java/pom.properties", LibratoBatch.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private final List<Measurement> measurements = new ArrayList<Measurement>();
+    protected final List<Measurement> measurements = new ArrayList<Measurement>();
     private final int postBatchSize;
     private final Sanitizer sanitizer;
     private final long timeout;
@@ -64,11 +64,11 @@ public class LibratoBatch {
     }
 
     public void addCounterMeasurement(String name, Long value) {
-        measurements.add(new CounterMeasurement(name, value));
+        addMeasurement(new CounterMeasurement(name, value));
     }
 
     public void addGaugeMeasurement(String name, Number value) {
-        measurements.add(new SingleValueGaugeMeasurement(name, value));
+        addMeasurement(new SingleValueGaugeMeasurement(name, value));
     }
 
     public void post(String source, long epoch) {

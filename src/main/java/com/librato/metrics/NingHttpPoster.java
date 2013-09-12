@@ -15,9 +15,11 @@ import java.util.concurrent.TimeoutException;
 public class NingHttpPoster implements HttpPoster {
     private final AsyncHttpClient httpClient = new AsyncHttpClient();
     private final String authHeader;
+    private final String apiUrl;
 
-    public NingHttpPoster(String authHeader) {
+    public NingHttpPoster(String authHeader, String apiUrl) {
         this.authHeader = authHeader;
+        this.apiUrl = apiUrl;
     }
 
     /**
@@ -25,10 +27,11 @@ public class NingHttpPoster implements HttpPoster {
      *
      * @param username the librato username
      * @param token    the librato token
+     * @param apiUrl   the URL to post to
      * @return a new NingHttpPoster
      */
-    public static NingHttpPoster newPoster(String username, String token) {
-        return new NingHttpPoster(Authorization.buildAuthHeader(username, token));
+    public static NingHttpPoster newPoster(String username, String token, String apiUrl) {
+        return new NingHttpPoster(Authorization.buildAuthHeader(username, token), apiUrl);
     }
 
     /**
@@ -76,7 +79,7 @@ public class NingHttpPoster implements HttpPoster {
     }
 
     public Future<Response> post(String userAgent, String payload) throws IOException {
-        final AsyncHttpClient.BoundRequestBuilder builder = httpClient.preparePost(API_URL);
+        final AsyncHttpClient.BoundRequestBuilder builder = httpClient.preparePost(apiUrl);
         builder.addHeader("Content-Type", "application/json");
         builder.addHeader("Authorization", authHeader);
         builder.addHeader("User-Agent", userAgent);

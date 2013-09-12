@@ -7,9 +7,6 @@ import java.util.concurrent.Future;
  * Posts data to an HTTP endpoint.
  */
 public interface HttpPoster {
-
-    static final String API_URL = "https://metrics-api.librato.com/v1/metrics";
-
     /**
      * A generic interface to represent an HTTP response
      */

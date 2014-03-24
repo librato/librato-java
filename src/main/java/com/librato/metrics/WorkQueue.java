@@ -8,11 +8,18 @@ import java.util.concurrent.*;
 /**
  * This class handles posting batch data to Librato.  If Librato is unavailable, it will
  * queue jobs up to a max age and max queue length, and periodically retry them.
+ *
+ * TODO: how to figure out when it's appropriate to retry?
+ *  - idea:
+ *      let there be a policy that accepts an exception from the client, or a response code from the api.
+ *      the default can simply retry on exception.
+ *
  */
 public class WorkQueue {
     private static final Logger logger = LoggerFactory.getLogger(WorkQueue.class);
     private static final long maxQueueAgeSeconds = TimeUnit.HOURS.toSeconds(2);
     private final ExecutorService executor;
+    private final BlockingQueue<Runnable> workQueue;
 
     public WorkQueue(int maxLength) {
         final int corePoolSize = 1;
@@ -21,7 +28,7 @@ public class WorkQueue {
         final TimeUnit keepAliveTimeUnit = TimeUnit.SECONDS;
         final ThreadFactory threadFactory = new WorkQueueThreadFactory();
         final RejectedExecutionHandler rejectedHandler = new WorkQueueRejectionHandler();
-        final BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<Runnable>(maxLength);
+        this.workQueue = new ArrayBlockingQueue<Runnable>(maxLength);
         this.executor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAlive, keepAliveTimeUnit, workQueue, threadFactory, rejectedHandler);
     }
 
@@ -49,7 +56,7 @@ public class WorkQueue {
         }
     }
 
-    private static class WorkQueueRunnable implements Runnable {
+    private class WorkQueueRunnable implements Runnable {
         private final Runnable delegate;
         private final long startTime;
 
@@ -76,8 +83,15 @@ public class WorkQueue {
             while (!isTooOld()) {
                 try {
                     delegate.run();
+                    return;
                 } catch (Exception e) {
-                    backoff();
+                    logger.error("Could not submit data to librato", e);
+                    if (!workQueue.isEmpty()) {
+                        logger.error("Current queue size is {}", workQueue.size());
+                    }
+                    if (!isTooOld()) {
+                        backoff();
+                    }
                 }
             }
         }

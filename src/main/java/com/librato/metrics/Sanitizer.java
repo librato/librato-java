@@ -22,7 +22,7 @@ public interface Sanitizer {
      */
     @SuppressWarnings("unused")
     public static final Sanitizer LAST_PASS = new Sanitizer() {
-        private final Pattern disallowedCharacters = Pattern.compile("([^A-Za-z0-9.:-_]|[\\[\\]]|\\s)");
+        private final Pattern disallowedCharacters = Pattern.compile("([^A-Za-z0-9.:\\-_]|[\\[\\]]|\\s)");
         private final int lengthLimit = 256;
 
         public String apply(String name) {

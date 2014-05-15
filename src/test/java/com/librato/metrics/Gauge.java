@@ -4,6 +4,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class Gauge {
     @JsonProperty
+    String source;
+    @JsonProperty
     String name;
     @JsonProperty
     Number value;
@@ -13,8 +15,25 @@ public class Gauge {
     }
 
     public Gauge(String name, Number value) {
+        this(null, name, value);
+    }
+
+    public Gauge(String source, String name, Number value) {
+        this.source = source;
         this.name = name;
         this.value = value;
+    }
+
+    public static Gauge of(String name, int value) {
+        return new Gauge(name, value);
+    }
+
+    public static Gauge of(String source, String name, int value) {
+        return new Gauge(source, name, value);
+    }
+
+    public String getSource() {
+        return source;
     }
 
     public String getName() {
@@ -32,6 +51,7 @@ public class Gauge {
 
         Gauge gauge = (Gauge) o;
 
+        if (source != null ? !source.equals(gauge.source) : gauge.source != null) return false;
         if (name != null ? !name.equals(gauge.name) : gauge.name != null) return false;
         if (value != null ? !value.equals(gauge.value) : gauge.value != null) return false;
 
@@ -41,6 +61,7 @@ public class Gauge {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (source != null ? source.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
@@ -48,12 +69,9 @@ public class Gauge {
     @Override
     public String toString() {
         return "Gauge{" +
-                "name='" + name + '\'' +
+                "source=" + source + '\'' +
+                ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';
-    }
-
-    public static Gauge of(String name, int value) {
-        return new Gauge(name, value);
     }
 }

@@ -12,16 +12,26 @@ import static com.librato.metrics.Preconditions.checkNumeric;
  * See http://dev.librato.com/v1/post/metrics for an explanation of basic vs multi-sample gauge
  */
 public class SingleValueGaugeMeasurement implements Measurement {
+    private final String source;
     private final String name;
     private final Number reading;
 
     public SingleValueGaugeMeasurement(String name, Number reading) {
+        this(null, name, reading);
+    }
+
+    public SingleValueGaugeMeasurement(String source, String name, Number reading) {
         try {
+            this.source = source;
             this.name = checkNotNull(name);
             this.reading = checkNumeric(checkNumeric(reading));
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid single-gauge measurement name=" + name, e);
         }
+    }
+
+    public String getSource() {
+        return source;
     }
 
     public String getName() {

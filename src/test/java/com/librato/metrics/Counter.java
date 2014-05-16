@@ -27,6 +27,7 @@ public class Counter {
     public static Counter of(String source, String name, Number value) {
         return new Counter(source, name, value);
     }
+
     public static Counter of(String name, Number value) {
         return new Counter(name, value);
     }

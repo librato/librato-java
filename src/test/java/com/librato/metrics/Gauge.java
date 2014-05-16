@@ -69,7 +69,7 @@ public class Gauge {
     @Override
     public String toString() {
         return "Gauge{" +
-                "source=" + source + '\'' +
+                "source='" + source + '\'' +
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';

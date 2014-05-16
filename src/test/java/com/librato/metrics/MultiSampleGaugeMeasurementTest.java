@@ -6,6 +6,16 @@ import org.junit.Test;
  * Verify that all the advanced details are filled in that are available
  */
 public class MultiSampleGaugeMeasurementTest {
+    @Test
+    public void testAllowNullSource() {
+        new MultiSampleGaugeMeasurement(null, "testGauge", 12L, 2, 2, 2, 2);
+    }
+
+    @Test
+    public void testAllowSource() {
+        new MultiSampleGaugeMeasurement("my.fancy.source", "testGauge", 12L, 2, 2, 2, 2);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptNaNAsSum() {
         new MultiSampleGaugeMeasurement("testGauge", 12L, Double.NaN, 2, 2, 2);

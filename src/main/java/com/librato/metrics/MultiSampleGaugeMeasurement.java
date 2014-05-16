@@ -12,6 +12,7 @@ import static com.librato.metrics.Preconditions.checkNumeric;
  * See http://dev.librato.com/v1/post/metrics for why some fields are optional
  */
 public class MultiSampleGaugeMeasurement implements Measurement {
+    private final String source;
     private final String name;
     private final Long count;
     private final Number sum;
@@ -25,10 +26,21 @@ public class MultiSampleGaugeMeasurement implements Measurement {
                                        Number max,
                                        Number min,
                                        Number sumSquares) {
+        this(null, name, count, sum, max, min, sumSquares);
+    }
+
+    public MultiSampleGaugeMeasurement(String source,
+                                       String name,
+                                       Long count,
+                                       Number sum,
+                                       Number max,
+                                       Number min,
+                                       Number sumSquares) {
         try {
             if (count == null || count == 0) {
                 throw new IllegalArgumentException("The Librato API requires the count to be > 0 for complex metrics. See http://dev.librato.com/v1/post/metrics");
             }
+            this.source = source;
             this.name = checkNotNull(name);
             this.count = count;
             this.sum = checkNumeric(sum);
@@ -38,6 +50,10 @@ public class MultiSampleGaugeMeasurement implements Measurement {
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid multi-sample gauge measurement name=" + name, e);
         }
+    }
+
+    public String getSource() {
+        return source;
     }
 
     public String getName() {

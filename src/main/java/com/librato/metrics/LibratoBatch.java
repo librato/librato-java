@@ -67,8 +67,16 @@ public class LibratoBatch {
         addMeasurement(new CounterMeasurement(name, value));
     }
 
+    public void addCounterMeasurement(String source, String name, Long value) {
+        addMeasurement(new CounterMeasurement(source, name, value));
+    }
+
     public void addGaugeMeasurement(String name, Number value) {
         addMeasurement(new SingleValueGaugeMeasurement(name, value));
+    }
+
+    public void addGaugeMeasurement(String source, String name, Number value) {
+        addMeasurement(new SingleValueGaugeMeasurement(source, name, value));
     }
 
     public void post(String source, long epoch) {
@@ -85,6 +93,9 @@ public class LibratoBatch {
             final Measurement measurement = measurementIterator.next();
             final Map<String, Object> data = new HashMap<String, Object>();
             data.put("name", sanitizer.apply(measurement.getName()));
+            if (measurement.getSource() != null) {
+                data.put("source", sanitizer.apply(measurement.getSource()));
+            }
             data.putAll(measurement.toMap());
             if (measurement instanceof CounterMeasurement) {
                 counterData.add(data);

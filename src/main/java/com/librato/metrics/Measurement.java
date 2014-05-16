@@ -8,6 +8,11 @@ import java.util.Map;
 public interface Measurement {
 
     /**
+     * @return the source of the measurement
+     */
+    public String getSource();
+
+    /**
      * @return the name of the measurement
      */
     public String getName();

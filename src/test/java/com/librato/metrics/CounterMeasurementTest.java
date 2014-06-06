@@ -18,6 +18,17 @@ public class CounterMeasurementTest {
     }
 
     @Test
+    public void testAllowNullPeriod() {
+      new CounterMeasurement("foo", null, "my.fancy.counter", 17L);
+    }
+
+    @Test
+    public void testAllowPeriod() {
+      new CounterMeasurement("my.fancy.source", 60L, "my.fancy.counter", 17L);
+    }
+
+
+  @Test
     public void testCorrectMap() throws Exception {
         CounterMeasurement counterMeasurement = new CounterMeasurement("my.fancy.counter", 17L);
         Map<String, Number> map = counterMeasurement.toMap();

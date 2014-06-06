@@ -16,7 +16,17 @@ public class MultiSampleGaugeMeasurementTest {
         new MultiSampleGaugeMeasurement("my.fancy.source", "testGauge", 12L, 2, 2, 2, 2);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
+    public void testAllowNullPeriod() {
+      new MultiSampleGaugeMeasurement("foo", null, "testGauge", 12L, 2, 2, 2, 2);
+    }
+
+    @Test
+    public void testAllowPeriod() {
+      new MultiSampleGaugeMeasurement("my.fancy.source", 1, "testGauge", 12L, 2, 2, 2, 2);
+    }
+
+  @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptNaNAsSum() {
         new MultiSampleGaugeMeasurement("testGauge", 12L, Double.NaN, 2, 2, 2);
     }

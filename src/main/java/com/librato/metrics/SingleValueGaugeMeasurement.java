@@ -52,6 +52,7 @@ public class SingleValueGaugeMeasurement implements Measurement {
     public Map<String, Number> toMap() {
         final Map<String, Number> value = new HashMap<String, Number>();
         value.put("value", reading);
+        value.put("period", period);
         return value;
     }
 }

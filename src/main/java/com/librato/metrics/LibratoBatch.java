@@ -31,12 +31,12 @@ public class LibratoBatch {
     /**
      * Constructor
      *
-     * @param postBatchSize size at which to break up the batch
-     * @param sanitizer the sanitizer to use for cleaning up metric names to comply with librato api requirements
-     * @param timeout time allowed for post
-     * @param timeoutUnit unit for timeout
+     * @param postBatchSize   size at which to break up the batch
+     * @param sanitizer       the sanitizer to use for cleaning up metric names to comply with librato api requirements
+     * @param timeout         time allowed for post
+     * @param timeoutUnit     unit for timeout
      * @param agentIdentifier a string that identifies the poster (such as the name of a library/program using librato-java)
-     * @param httpPoster the {@link com.librato.metrics.HttpPoster} that will send the data to Librato
+     * @param httpPoster      the {@link com.librato.metrics.HttpPoster} that will send the data to Librato
      */
     public LibratoBatch(int postBatchSize,
                         final Sanitizer sanitizer,
@@ -71,12 +71,20 @@ public class LibratoBatch {
         addMeasurement(new CounterMeasurement(source, name, value));
     }
 
+    public void addCounterMeasurement(String source, Number period, String name, Long value) {
+        addMeasurement(new CounterMeasurement(source, period, name, value));
+    }
+
     public void addGaugeMeasurement(String name, Number value) {
         addMeasurement(new SingleValueGaugeMeasurement(name, value));
     }
 
     public void addGaugeMeasurement(String source, String name, Number value) {
         addMeasurement(new SingleValueGaugeMeasurement(source, name, value));
+    }
+
+    public void addGaugeMeasurement(String source, Number period, String name, Number value) {
+        addMeasurement(new SingleValueGaugeMeasurement(source, period, name, value));
     }
 
     public void post(String source, long epoch) {
@@ -95,6 +103,9 @@ public class LibratoBatch {
             data.put("name", sanitizer.apply(measurement.getName()));
             if (measurement.getSource() != null) {
                 data.put("source", sanitizer.apply(measurement.getSource()));
+            }
+            if (measurement.getPeriod() != null) {
+                data.put("period", measurement.getPeriod());
             }
             data.putAll(measurement.toMap());
             if (measurement instanceof CounterMeasurement) {

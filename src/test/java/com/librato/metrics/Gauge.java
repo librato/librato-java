@@ -6,6 +6,8 @@ public class Gauge {
     @JsonProperty
     String source;
     @JsonProperty
+    Number period;
+    @JsonProperty
     String name;
     @JsonProperty
     Number value;
@@ -15,11 +17,16 @@ public class Gauge {
     }
 
     public Gauge(String name, Number value) {
-        this(null, name, value);
+        this(null, null, name, value);
     }
 
     public Gauge(String source, String name, Number value) {
+        this(source, null, name, value);
+    }
+
+    public Gauge(String source, Number period, String name, Number value) {
         this.source = source;
+        this.period = period;
         this.name = name;
         this.value = value;
     }
@@ -32,8 +39,16 @@ public class Gauge {
         return new Gauge(source, name, value);
     }
 
+    public static Gauge of(String source, Number period, String name, int value) {
+        return new Gauge(source, period, name, value);
+    }
+
     public String getSource() {
         return source;
+    }
+
+    public Number getPeriod() {
+        return period;
     }
 
     public String getName() {
@@ -44,6 +59,7 @@ public class Gauge {
         return value;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -52,6 +68,7 @@ public class Gauge {
         Gauge gauge = (Gauge) o;
 
         if (source != null ? !source.equals(gauge.source) : gauge.source != null) return false;
+        if (period != null ? !period.equals(gauge.period) : gauge.period != null) return false;
         if (name != null ? !name.equals(gauge.name) : gauge.name != null) return false;
         if (value != null ? !value.equals(gauge.value) : gauge.value != null) return false;
 
@@ -62,6 +79,7 @@ public class Gauge {
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + (period != null ? period.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
@@ -70,6 +88,7 @@ public class Gauge {
     public String toString() {
         return "Gauge{" +
                 "source='" + source + '\'' +
+                ", period='" + period + '\'' +
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';

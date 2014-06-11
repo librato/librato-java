@@ -6,6 +6,8 @@ public class Counter {
     @JsonProperty
     String source;
     @JsonProperty
+    Number period;
+    @JsonProperty
     String name;
     @JsonProperty
     Number value;
@@ -19,9 +21,18 @@ public class Counter {
     }
 
     public Counter(String source, String name, Number value) {
+        this(source, null, name, value);
+    }
+
+    public Counter(String source, Number period, String name, Number value) {
         this.source = source;
+        this.period = period;
         this.name = name;
         this.value = value;
+    }
+
+    public static Counter of(String source, Number period, String name, Number value) {
+        return new Counter(source, period, name, value);
     }
 
     public static Counter of(String source, String name, Number value) {
@@ -34,6 +45,10 @@ public class Counter {
 
     String getSource() {
         return source;
+    }
+
+    Number getPeriod() {
+        return period;
     }
 
     String getName() {
@@ -52,6 +67,7 @@ public class Counter {
         Counter counter = (Counter) o;
 
         if (source != null ? !source.equals(counter.source) : counter.source != null) return false;
+        if (period != null ? !period.equals(counter.period) : counter.period != null) return false;
         if (name != null ? !name.equals(counter.name) : counter.name != null) return false;
         if (value != null ? !value.equals(counter.value) : counter.value != null) return false;
 
@@ -62,6 +78,7 @@ public class Counter {
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + (period != null ? period.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
@@ -70,6 +87,7 @@ public class Counter {
     public String toString() {
         return "Counter{" +
                 "source='" + source + '\'' +
+                ", period='" + period + '\'' +
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';

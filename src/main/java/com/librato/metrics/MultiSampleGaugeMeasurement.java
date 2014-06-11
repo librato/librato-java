@@ -77,7 +77,6 @@ public class MultiSampleGaugeMeasurement implements Measurement {
 
     public Map<String, Number> toMap() {
         final Map<String, Number> result = new HashMap<String, Number>(5);
-        result.put("period", period);
         result.put("count", count);
         result.put("sum", sum);
         if (max != null) {

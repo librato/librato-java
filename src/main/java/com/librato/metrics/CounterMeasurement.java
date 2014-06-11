@@ -33,7 +33,9 @@ public class CounterMeasurement implements Measurement {
         return source;
     }
 
-    public Number getPeriod() { return period; }
+    public Number getPeriod() {
+        return period;
+    }
 
     public String getName() {
         return name;

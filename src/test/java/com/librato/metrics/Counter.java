@@ -20,7 +20,9 @@ public class Counter {
         this(null, name, value);
     }
 
-    public Counter(String source, String name, Number value) { this(source, null, name, value); }
+    public Counter(String source, String name, Number value) {
+        this(source, null, name, value);
+    }
 
     public Counter(String source, Number period, String name, Number value) {
         this.source = source;
@@ -45,7 +47,9 @@ public class Counter {
         return source;
     }
 
-    Number getPeriod() { return period; }
+    Number getPeriod() {
+        return period;
+    }
 
     String getName() {
         return name;

@@ -23,6 +23,7 @@ public class Gauge {
     public Gauge(String source, String name, Number value) {
         this(source, null, name, value);
     }
+
     public Gauge(String source, Number period, String name, Number value) {
         this.source = source;
         this.period = period;
@@ -39,14 +40,16 @@ public class Gauge {
     }
 
     public static Gauge of(String source, Number period, String name, int value) {
-      return new Gauge(source, period, name, value);
+        return new Gauge(source, period, name, value);
     }
 
     public String getSource() {
         return source;
     }
 
-    public Number getPeriod() { return period; }
+    public Number getPeriod() {
+        return period;
+    }
 
     public String getName() {
         return name;

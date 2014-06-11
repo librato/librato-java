@@ -22,7 +22,7 @@ etc if you have metrics with dashes in the names and upgrade to this version of 
     <dependency>
         <groupId>com.librato.metrics</groupId>
         <artifactId>librato-java</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </dependency>
     
 ## Usage
@@ -57,6 +57,11 @@ You can also specify sources per-gauge/counter as of version `1.0.1`:
  
     batch.addGaugeMeasurement("east-orchard", "apples", 100)
     batch.addGaugeMeasurement("west-orchard", "apples", 200)
+    
+You can also specify a metric period (in seconds) per-gauge/counter as of version `1.0.2`:
+
+    batch.addGaugeMeasurement("east-orchard", 60, "apples", 100)
+    batch.addGaugeMeasurement("west-orchard", 60, "apples", 200)
     
 Now, it's time to submit to Librato. One must specify an epoch that will be applied to all of the measurements
 as well as a source that will be applied to measurements that did not have a source specified when adding to

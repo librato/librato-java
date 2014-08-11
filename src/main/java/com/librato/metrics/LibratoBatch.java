@@ -27,8 +27,8 @@ public class LibratoBatch {
     private final long timeout;
     private final TimeUnit timeoutUnit;
     private final String userAgent;
-    private final HttpPoster httpPoster;
-    private final HttpGetter httpGetter;
+    private HttpPoster httpPoster;
+    private HttpGetter httpGetter;
 
     /**
      * Constructor
@@ -45,8 +45,7 @@ public class LibratoBatch {
                         long timeout,
                         TimeUnit timeoutUnit,
                         String agentIdentifier,
-                        HttpPoster httpPoster,
-                        HttpGetter httpGetter) {
+                        HttpPoster httpPoster) {
         this.postBatchSize = postBatchSize;
         this.sanitizer = new Sanitizer() {
             public String apply(String name) {
@@ -57,8 +56,23 @@ public class LibratoBatch {
         this.timeoutUnit = timeoutUnit;
         this.userAgent = String.format("%s librato-java/%s", agentIdentifier, LIB_VERSION);
         this.httpPoster = checkNotNull(httpPoster);
-        this.httpGetter = checkNotNull(httpGetter);
     }
+    
+	public LibratoBatch(int postBatchSize, final Sanitizer sanitizer,
+			long timeout, TimeUnit timeoutUnit, String agentIdentifier,
+			HttpGetter httpGetter) {
+		this.postBatchSize = postBatchSize;
+		this.sanitizer = new Sanitizer() {
+			public String apply(String name) {
+				return Sanitizer.LAST_PASS.apply(sanitizer.apply(name));
+			}
+		};
+		this.timeout = timeout;
+		this.timeoutUnit = timeoutUnit;
+		this.userAgent = String.format("%s librato-java/%s", agentIdentifier,
+				LIB_VERSION);
+		this.httpGetter = checkNotNull(httpGetter);
+	}
 
     /**
      * for advanced measurement fu

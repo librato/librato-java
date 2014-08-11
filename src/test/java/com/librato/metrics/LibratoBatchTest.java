@@ -32,7 +32,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
         batch.addCounterMeasurement("apples", 1L);
         batch.post(source, epoch);
 
@@ -52,7 +52,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
         batch.addCounterMeasurement("farm", "apples", 1L);
         batch.post(source, epoch);
 
@@ -72,7 +72,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
         batch.addCounterMeasurement("farm", 60L, "apples", 1L);
         batch.post(source, epoch);
 
@@ -92,7 +92,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
         batch.addGaugeMeasurement("apples", 1L);
         batch.post(source, epoch);
 
@@ -112,7 +112,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
         batch.addGaugeMeasurement("farm", "apples", 1L);
         batch.post(source, epoch);
 
@@ -132,7 +132,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
         batch.addGaugeMeasurement("farm", 60, "apples", 1L);
         batch.post(source, epoch);
 
@@ -152,7 +152,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
         // don't add anything
         batch.post("junit", epoch);
         Mockito.verify(poster, Mockito.times(0)).post(anyString(), anyString());

@@ -18,10 +18,12 @@ public class LibratoBatchTest {
     final String agent = "test-agent";
 
     HttpPoster poster;
+    HttpGetter getter;
 
     @Before
     public void setUp() throws Exception {
         poster = Mockito.mock(HttpPoster.class);
+        getter = Mockito.mock(HttpGetter.class);
     }
 
     @Test
@@ -30,7 +32,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
         batch.addCounterMeasurement("apples", 1L);
         batch.post(source, epoch);
 
@@ -50,7 +52,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
         batch.addCounterMeasurement("farm", "apples", 1L);
         batch.post(source, epoch);
 
@@ -70,7 +72,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
         batch.addCounterMeasurement("farm", 60L, "apples", 1L);
         batch.post(source, epoch);
 
@@ -90,7 +92,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
         batch.addGaugeMeasurement("apples", 1L);
         batch.post(source, epoch);
 
@@ -110,7 +112,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
         batch.addGaugeMeasurement("farm", "apples", 1L);
         batch.post(source, epoch);
 
@@ -130,7 +132,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
         batch.addGaugeMeasurement("farm", 60, "apples", 1L);
         batch.post(source, epoch);
 
@@ -150,7 +152,7 @@ public class LibratoBatchTest {
         final Future<Response> future = ReturningFuture.of(response);
         Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
         final long epoch = System.currentTimeMillis();
-        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster, getter);
         // don't add anything
         batch.post("junit", epoch);
         Mockito.verify(poster, Mockito.times(0)).post(anyString(), anyString());

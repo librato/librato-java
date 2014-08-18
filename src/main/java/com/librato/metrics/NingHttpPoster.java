@@ -1,6 +1,7 @@
 package com.librato.metrics;
 
 import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.AsyncHttpClientConfig;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -13,13 +14,20 @@ import java.util.concurrent.TimeoutException;
  */
 @SuppressWarnings("unused")
 public class NingHttpPoster implements HttpPoster {
-    private final AsyncHttpClient httpClient = new AsyncHttpClient();
+    private final AsyncHttpClient httpClient;
     private final String authHeader;
     private final String apiUrl;
 
     public NingHttpPoster(String authHeader, String apiUrl) {
         this.authHeader = authHeader;
         this.apiUrl = apiUrl;
+        this.httpClient = new AsyncHttpClient();
+    }
+
+    public NingHttpPoster(String authHeader, String apiUrl, AsyncHttpClientConfig httpClientConfig) {
+        this.authHeader = authHeader;
+        this.apiUrl = apiUrl;
+        this.httpClient = new AsyncHttpClient(httpClientConfig);
     }
 
     /**
@@ -32,6 +40,19 @@ public class NingHttpPoster implements HttpPoster {
      */
     public static NingHttpPoster newPoster(String username, String token, String apiUrl) {
         return new NingHttpPoster(Authorization.buildAuthHeader(username, token), apiUrl);
+    }
+
+    /**
+     * Return a new poster with the correct authentication header.
+     *
+     * @param username         the librato username
+     * @param token            the librato token
+     * @param apiUrl           the URL to post to
+     * @param httpClientConfig configuration of http client, this can be use to pass a proxy server.
+     * @return a new NingHttpPoster
+     */
+    public static NingHttpPoster newPoster(String username, String token, String apiUrl, AsyncHttpClientConfig httpClientConfig) {
+        return new NingHttpPoster(Authorization.buildAuthHeader(username, token), apiUrl, httpClientConfig);
     }
 
     /**

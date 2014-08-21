@@ -4,11 +4,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.librato.metrics.HttpPoster.Response;
+
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static com.librato.metrics.HttpPoster.Response;
 import static com.librato.metrics.Preconditions.checkNotNull;
 
 /**
@@ -26,7 +27,8 @@ public class LibratoBatch {
     private final long timeout;
     private final TimeUnit timeoutUnit;
     private final String userAgent;
-    private final HttpPoster httpPoster;
+    private HttpPoster httpPoster;
+    private HttpGetter httpGetter;
 
     /**
      * Constructor
@@ -55,6 +57,22 @@ public class LibratoBatch {
         this.userAgent = String.format("%s librato-java/%s", agentIdentifier, LIB_VERSION);
         this.httpPoster = checkNotNull(httpPoster);
     }
+    
+	public LibratoBatch(int postBatchSize, final Sanitizer sanitizer,
+			long timeout, TimeUnit timeoutUnit, String agentIdentifier,
+			HttpGetter httpGetter) {
+		this.postBatchSize = postBatchSize;
+		this.sanitizer = new Sanitizer() {
+			public String apply(String name) {
+				return Sanitizer.LAST_PASS.apply(sanitizer.apply(name));
+			}
+		};
+		this.timeout = timeout;
+		this.timeoutUnit = timeoutUnit;
+		this.userAgent = String.format("%s librato-java/%s", agentIdentifier,
+				LIB_VERSION);
+		this.httpGetter = checkNotNull(httpGetter);
+	}
 
     /**
      * for advanced measurement fu
@@ -142,5 +160,28 @@ public class LibratoBatch {
         } catch (Exception e) {
             LOG.error("Unable to post to Librato API", e);
         }
+    }
+    
+    /**
+     * Returns the json string response generated
+     * @return
+     */
+    public String get()
+    {
+    	try {
+			Future<com.librato.metrics.HttpGetter.Response> future =  httpGetter.get(userAgent);
+			final com.librato.metrics.HttpGetter.Response response = future.get(timeout, timeoutUnit);
+            final int statusCode = response.getStatusCode();
+            if (statusCode < 200 || statusCode >= 300) {
+                LOG.error("Received an error from Librato API. Code : {}, Message: {}", statusCode, response.getBody());
+            }
+			return future.get().getBody();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			LOG.error("Unable to GET using Librato API", e);
+		}
+		return null;
+    	
     }
 }

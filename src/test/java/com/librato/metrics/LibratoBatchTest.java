@@ -18,10 +18,12 @@ public class LibratoBatchTest {
     final String agent = "test-agent";
 
     HttpPoster poster;
+    HttpGetter getter;
 
     @Before
     public void setUp() throws Exception {
         poster = Mockito.mock(HttpPoster.class);
+        getter = Mockito.mock(HttpGetter.class);
     }
 
     @Test

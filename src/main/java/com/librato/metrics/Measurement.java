@@ -10,20 +10,25 @@ public interface Measurement {
     /**
      * @return the source of the measurement
      */
-    public String getSource();
+    String getSource();
 
     /**
      * @return the name of the measurement
      */
-    public String getName();
+    String getName();
 
     /**
      * @return the period of the measurement
      */
-    public Number getPeriod();
+    Number getPeriod();
 
     /**
      * @return a map of metric names to numbers
      */
-    public Map<String, Number> toMap();
+    Map<String, Number> toMap();
+
+    /**
+     * @return the metric attributes that should be applied to this metric when created
+     */
+    Map<String, Object> getMetricAttributes();
 }

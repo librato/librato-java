@@ -2,6 +2,9 @@ package com.librato.metrics;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class Gauge {
     @JsonProperty
     String source;
@@ -11,6 +14,8 @@ public class Gauge {
     String name;
     @JsonProperty
     Number value;
+    @JsonProperty
+    Map<String, Object> attributes = Collections.emptyMap();
 
     public Gauge() {
         // jackson
@@ -59,6 +64,9 @@ public class Gauge {
         return value;
     }
 
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
     @Override
     public boolean equals(Object o) {

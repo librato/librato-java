@@ -2,6 +2,9 @@ package com.librato.metrics;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class Counter {
     @JsonProperty
     String source;
@@ -11,6 +14,8 @@ public class Counter {
     String name;
     @JsonProperty
     Number value;
+    @JsonProperty
+    Map<String, Object> attributes = Collections.emptyMap();
 
     public Counter() {
         // jackson
@@ -57,6 +62,10 @@ public class Counter {
 
     Number getValue() {
         return value;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     @Override

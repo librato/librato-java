@@ -1,5 +1,6 @@
 package com.librato.metrics;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MultiSampleGaugeMeasurementBuilder {
@@ -11,7 +12,7 @@ public class MultiSampleGaugeMeasurementBuilder {
     private Number max;
     private Number min;
     private Number sumSquares;
-    private Map<String, Object> metricAttributes;
+    private Map<String, Object> metricAttributes = new HashMap<String, Object>();
 
     public MultiSampleGaugeMeasurementBuilder(String name) {
         this.name = name;

@@ -16,6 +16,10 @@ public class Gauge {
     Number value;
     @JsonProperty
     Map<String, Object> attributes = Collections.emptyMap();
+    @JsonProperty
+    Long count;
+    @JsonProperty
+    Number sum;
 
     public Gauge() {
         // jackson
@@ -75,9 +79,12 @@ public class Gauge {
 
         Gauge gauge = (Gauge) o;
 
-        if (source != null ? !source.equals(gauge.source) : gauge.source != null) return false;
-        if (period != null ? !period.equals(gauge.period) : gauge.period != null) return false;
+        if (attributes != null ? !attributes.equals(gauge.attributes) : gauge.attributes != null) return false;
+        if (count != null ? !count.equals(gauge.count) : gauge.count != null) return false;
         if (name != null ? !name.equals(gauge.name) : gauge.name != null) return false;
+        if (period != null ? !period.equals(gauge.period) : gauge.period != null) return false;
+        if (source != null ? !source.equals(gauge.source) : gauge.source != null) return false;
+        if (sum != null ? !sum.equals(gauge.sum) : gauge.sum != null) return false;
         if (value != null ? !value.equals(gauge.value) : gauge.value != null) return false;
 
         return true;
@@ -85,10 +92,13 @@ public class Gauge {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (source != null ? source.hashCode() : 0);
+        int result = source != null ? source.hashCode() : 0;
         result = 31 * result + (period != null ? period.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        result = 31 * result + (count != null ? count.hashCode() : 0);
+        result = 31 * result + (sum != null ? sum.hashCode() : 0);
         return result;
     }
 

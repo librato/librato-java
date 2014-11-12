@@ -170,6 +170,33 @@ public class LibratoBatchTest {
     }
 
     @Test
+    public void testPostsAnAggregatedMultiSampleGauge() throws Exception {
+        final Response response = new FakeResponse(200);
+        final Future<Response> future = ReturningFuture.of(response);
+        Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
+        final long epoch = System.currentTimeMillis();
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        batch.addMeasurement(MultiSampleGaugeMeasurement
+                .builder("farm")
+                .setCount(1L)
+                .setSum(50L)
+                .setMetricAttribute("aggregate", true) // add the metric attribute
+                .build());
+        batch.post(source, epoch);
+
+        ArgumentCaptor<String> payloadCapture = ArgumentCaptor.forClass(String.class);
+        Mockito.verify(poster).post(Matchers.eq("test-agent librato-java/unknown"), payloadCapture.capture());
+        final Payload payload = Payload.parse(payloadCapture.getValue());
+        assertEquals(source, payload.getSource());
+        assertEquals(0, payload.getCounters().size());
+        assertEquals(1, payload.getGauges().size());
+        Gauge gauge = payload.getGauges().iterator().next();
+        assertEquals(1, gauge.attributes.size());
+        assertEquals(true, gauge.attributes.get("aggregate"));
+        assertEquals(epoch, payload.getMeasureTime());
+    }
+
+    @Test
     public void testPostsAnAggregatedCounter() throws Exception {
         final Response response = new FakeResponse(200);
         final Future<Response> future = ReturningFuture.of(response);

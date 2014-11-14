@@ -22,7 +22,7 @@ etc if you have metrics with dashes in the names and upgrade to this version of 
     <dependency>
         <groupId>com.librato.metrics</groupId>
         <artifactId>librato-java</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </dependency>
     
 ## Usage

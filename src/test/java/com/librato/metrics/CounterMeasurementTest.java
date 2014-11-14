@@ -9,28 +9,38 @@ import static junit.framework.Assert.assertEquals;
 public class CounterMeasurementTest {
     @Test
     public void testAllowNullSource() {
-        new CounterMeasurement(null, "my.fancy.counter", 17L);
+        new CounterMeasurementBuilder("my.fancy.counter", 17L)
+                .setSource(null)
+                .build();
     }
 
     @Test
     public void testAllowSource() {
-        new CounterMeasurement("my.fancy.source", "my.fancy.counter", 17L);
+        new CounterMeasurementBuilder("my.fancy.counter", 17L)
+                .setSource("my.fancy.source")
+                .build();
     }
 
     @Test
     public void testAllowNullPeriod() {
-      new CounterMeasurement("foo", null, "my.fancy.counter", 17L);
+        new CounterMeasurementBuilder("my.fancy.counter", 17L)
+                .setSource("foo")
+                .setPeriod(null)
+                .build();
     }
 
     @Test
     public void testAllowPeriod() {
-      new CounterMeasurement("my.fancy.source", 60L, "my.fancy.counter", 17L);
+        new CounterMeasurementBuilder("my.fancy.counter", 17L)
+                .setSource("foo")
+                .setPeriod(60L)
+                .build();
     }
 
 
-  @Test
+    @Test
     public void testCorrectMap() throws Exception {
-        CounterMeasurement counterMeasurement = new CounterMeasurement("my.fancy.counter", 17L);
+        CounterMeasurement counterMeasurement = new CounterMeasurementBuilder("my.fancy.counter", 17L).build();
         Map<String, Number> map = counterMeasurement.toMap();
 
         assertEquals(1, map.size());

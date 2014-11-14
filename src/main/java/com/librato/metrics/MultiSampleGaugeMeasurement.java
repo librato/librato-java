@@ -20,24 +20,10 @@ public class MultiSampleGaugeMeasurement implements Measurement {
     private final Number max;
     private final Number min;
     private final Number sumSquares;
+    private final Map<String, Object> metricAttributes;
 
-    public MultiSampleGaugeMeasurement(String name,
-                                       Long count,
-                                       Number sum,
-                                       Number max,
-                                       Number min,
-                                       Number sumSquares) {
-        this(null, name, count, sum, max, min, sumSquares);
-    }
-
-    public MultiSampleGaugeMeasurement(String source,
-                                       String name,
-                                       Long count,
-                                       Number sum,
-                                       Number max,
-                                       Number min,
-                                       Number sumSquares) {
-        this(source, null, name, count, sum, max, min, sumSquares);
+    public static MultiSampleGaugeMeasurementBuilder builder(String name) {
+        return new MultiSampleGaugeMeasurementBuilder(name);
     }
 
     public MultiSampleGaugeMeasurement(String source,
@@ -47,7 +33,8 @@ public class MultiSampleGaugeMeasurement implements Measurement {
                                        Number sum,
                                        Number max,
                                        Number min,
-                                       Number sumSquares) {
+                                       Number sumSquares,
+                                       Map<String, Object> metricAttributes) {
         try {
             if (count == null || count == 0) {
                 throw new IllegalArgumentException("The Librato API requires the count to be > 0 for complex metrics. See http://dev.librato.com/v1/post/metrics");
@@ -60,9 +47,14 @@ public class MultiSampleGaugeMeasurement implements Measurement {
             this.max = checkNumeric(max);
             this.min = checkNumeric(min);
             this.sumSquares = checkNumeric(sumSquares);
+            this.metricAttributes = metricAttributes;
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid multi-sample gauge measurement name=" + name, e);
         }
+    }
+
+    public Map<String, Object> getMetricAttributes() {
+        return metricAttributes;
     }
 
     public String getSource() {

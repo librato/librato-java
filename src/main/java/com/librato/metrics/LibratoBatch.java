@@ -64,27 +64,37 @@ public class LibratoBatch {
     }
 
     public void addCounterMeasurement(String name, Long value) {
-        addMeasurement(new CounterMeasurement(name, value));
+        addMeasurement(CounterMeasurement.builder(name, value).build());
     }
 
     public void addCounterMeasurement(String source, String name, Long value) {
-        addMeasurement(new CounterMeasurement(source, name, value));
+        addMeasurement(CounterMeasurement.builder(name, value)
+                .setSource(source)
+                .build());
     }
 
     public void addCounterMeasurement(String source, Number period, String name, Long value) {
-        addMeasurement(new CounterMeasurement(source, period, name, value));
+        addMeasurement(CounterMeasurement.builder(name, value)
+                .setSource(source)
+                .setPeriod(period)
+                .build());
     }
 
     public void addGaugeMeasurement(String name, Number value) {
-        addMeasurement(new SingleValueGaugeMeasurement(name, value));
+        addMeasurement(SingleValueGaugeMeasurement.builder(name, value).build());
     }
 
     public void addGaugeMeasurement(String source, String name, Number value) {
-        addMeasurement(new SingleValueGaugeMeasurement(source, name, value));
+        addMeasurement(SingleValueGaugeMeasurement.builder(name, value)
+                .setSource(source)
+                .build());
     }
 
     public void addGaugeMeasurement(String source, Number period, String name, Number value) {
-        addMeasurement(new SingleValueGaugeMeasurement(source, period, name, value));
+        addMeasurement(SingleValueGaugeMeasurement.builder(name, value)
+                .setSource(source)
+                .setPeriod(period)
+                .build());
     }
 
     public void post(String source, long epoch) {
@@ -106,6 +116,9 @@ public class LibratoBatch {
             }
             if (measurement.getPeriod() != null) {
                 data.put("period", measurement.getPeriod());
+            }
+            if (!measurement.getMetricAttributes().isEmpty()) {
+                data.put("attributes", measurement.getMetricAttributes());
             }
             data.putAll(measurement.toMap());
             if (measurement instanceof CounterMeasurement) {

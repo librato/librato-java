@@ -8,61 +8,146 @@ import org.junit.Test;
 public class MultiSampleGaugeMeasurementTest {
     @Test
     public void testAllowNullSource() {
-        new MultiSampleGaugeMeasurement(null, "testGauge", 12L, 2, 2, 2, 2);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource(null)
+                .setPeriod(60L)
+                .setCount(2L)
+                .setSum(2)
+                .setMax(2)
+                .setMin(2)
+                .build();
     }
 
     @Test
     public void testAllowSource() {
-        new MultiSampleGaugeMeasurement("my.fancy.source", "testGauge", 12L, 2, 2, 2, 2);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60L)
+                .setCount(2L)
+                .setSum(2)
+                .setMax(2)
+                .setMin(2)
+                .build();
     }
 
     @Test
     public void testAllowNullPeriod() {
-        new MultiSampleGaugeMeasurement("foo", null, "testGauge", 12L, 2, 2, 2, 2);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(null)
+                .setCount(2L)
+                .setSum(2)
+                .setMax(2)
+                .setMin(2)
+                .build();
     }
 
     @Test
     public void testAllowPeriod() {
-        new MultiSampleGaugeMeasurement("my.fancy.source", 1, "testGauge", 12L, 2, 2, 2, 2);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60)
+                .setCount(2L)
+                .setSum(2)
+                .setMax(2)
+                .setMin(2)
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptNaNAsSum() {
-        new MultiSampleGaugeMeasurement("testGauge", 12L, Double.NaN, 2, 2, 2);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60)
+                .setCount(2L)
+                .setSum(Double.NaN)
+                .setMax(2)
+                .setMin(2)
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptPosInfAsSum() {
-        new MultiSampleGaugeMeasurement("testGauge", 12L, Double.POSITIVE_INFINITY, 2, 2, 2);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60)
+                .setCount(2L)
+                .setSum(Double.POSITIVE_INFINITY)
+                .setMax(2)
+                .setMin(2)
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptNegInfAsSum() {
-        new MultiSampleGaugeMeasurement("testGauge", 12L, Double.NEGATIVE_INFINITY, 2, 2, 2);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60)
+                .setCount(2L)
+                .setSum(Double.NEGATIVE_INFINITY)
+                .setMax(2)
+                .setMin(2)
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptNonNumericValuesAsMax() {
-        new MultiSampleGaugeMeasurement("testGauge", 12L, 2, Double.NEGATIVE_INFINITY, 2, 2);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60)
+                .setCount(2L)
+                .setSum(2L)
+                .setMax(Double.NEGATIVE_INFINITY)
+                .setMin(2)
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptNonNumericValuesAsMin() {
-        new MultiSampleGaugeMeasurement("testGauge", 12L, 2, 2, Double.POSITIVE_INFINITY, 2);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60)
+                .setCount(2L)
+                .setSum(2L)
+                .setMax(2)
+                .setMin(Double.NEGATIVE_INFINITY)
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptNonNumericValuesAsSumSquares() {
-        new MultiSampleGaugeMeasurement("testGauge", 12L, 2, 2, 2, Double.NaN);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60)
+                .setCount(2L)
+                .setSum(2L)
+                .setMax(2)
+                .setMin(2)
+                .setSumSquares(Double.NEGATIVE_INFINITY)
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptNullCount() throws Exception {
-        Measurement m = new MultiSampleGaugeMeasurement("testGauge", null, null, null, null, null);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60)
+                .setCount(null)
+                .setSum(2L)
+                .setMax(2)
+                .setMin(2)
+                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void doesNotAcceptZeroCount() throws Exception {
-        Measurement m = new MultiSampleGaugeMeasurement("testGauge", 0L, null, null, null, null);
+        new MultiSampleGaugeMeasurementBuilder("name")
+                .setSource("source")
+                .setPeriod(60)
+                .setCount(0L)
+                .setSum(2L)
+                .setMax(2)
+                .setMin(2)
+                .build();
     }
 }

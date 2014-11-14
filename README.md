@@ -62,6 +62,19 @@ You can also specify a metric period (in seconds) per-gauge/counter as of versio
 
     batch.addGaugeMeasurement("east-orchard", 60, "apples", 100)
     batch.addGaugeMeasurement("west-orchard", 60, "apples", 200)
+
+You can also use builder classes as of version `1.0.5`:
+
+    batch.addMeasurement(SingleValueGaugeMeasurement.builder("apples", 100)
+        .setSource("east-orchard")
+        .setMetricAttribute("aggregate", true)
+        .build())
+
+Note that `setMetricAttribute` is a new capability of measurements in the `1.0.5` release. With this
+you can (as illustrated in the above example) set a metric to use Service Side Aggregation. There are other
+supported attributes, described [in the API documentation](http://dev.librato.com/v1/metric-attributes).  Note
+that these attributes are only applied when a measurement causes a metric to be created.  After a metric has
+been created its attributes may be altered through the [metrics PUT API method](http://dev.librato.com/v1/put/metrics).
     
 Now, it's time to submit to Librato. One must specify an epoch that will be applied to all of the measurements
 as well as a source that will be applied to measurements that did not have a source specified when adding to

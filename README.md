@@ -78,11 +78,17 @@ been created its attributes may be altered through the [metrics PUT API method](
     
 Now, it's time to submit to Librato. One must specify an epoch that will be applied to all of the measurements
 as well as a source that will be applied to measurements that did not have a source specified when adding to
-the `batch`.
+the `batch`.  The post method will return a BatchResult which composes status results for each POST to Librato's API
+that occurred for this batch.
 
     long epoch = System.currentTimeMillis / 1000
     String source = `typically machine name, or leave as null`
-    batch.post(source, epoch)
+    BatchResult result = batch.post(source, epoch)
+    if (!result.success()) {
+        for (PostResult post : result.getFailedPosts()) {
+            log.error("Could not POST to Librato: {}", post)
+        }
+    }
     
 
    

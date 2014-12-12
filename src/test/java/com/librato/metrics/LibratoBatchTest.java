@@ -6,11 +6,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static com.librato.metrics.HttpPoster.Response;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 
 public class LibratoBatchTest {
@@ -22,6 +24,44 @@ public class LibratoBatchTest {
     @Before
     public void setUp() throws Exception {
         poster = Mockito.mock(HttpPoster.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testReturnsBatchResponseOn200() throws Exception {
+        final Response response = new FakeResponse(200);
+        final Future<Response> future = ReturningFuture.of(response);
+        Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
+        final long epoch = System.currentTimeMillis();
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        batch.addCounterMeasurement("apples", 1L);
+        BatchResult result = batch.post(source, epoch);
+        assertEquals(1, result.getPosts().size());
+        PostResult postResult = result.getPosts().iterator().next();
+        assertEquals(200, postResult.getStatusCode().intValue());
+        assertNull(postResult.getException());
+        assertEquals(1, ((List<Map<String, Object>>) postResult.getData().get("counters")).size());
+        assertEquals(0, ((List<Map<String, Object>>) postResult.getData().get("gauges")).size());
+        assertTrue(result.success());
+        assertEquals(0, result.getFailedPosts().size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testReturnsBatchResponseOnException() throws Exception {
+        Mockito.when(poster.post(anyString(), anyString())).thenThrow(new RuntimeException("test-failure"));
+        final long epoch = System.currentTimeMillis();
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        batch.addGaugeMeasurement("apples", 1L);
+        BatchResult result = batch.post(source, epoch);
+        assertEquals(1, result.getPosts().size());
+        PostResult postResult = result.getPosts().iterator().next();
+        assertNull(postResult.getStatusCode());
+        assertNotNull(postResult.getException());
+        assertEquals(0, ((List<Map<String, Object>>) postResult.getData().get("counters")).size());
+        assertEquals(1, ((List<Map<String, Object>>) postResult.getData().get("gauges")).size());
+        assertFalse(result.success());
+        assertEquals(1, result.getFailedPosts().size());
     }
 
     @Test

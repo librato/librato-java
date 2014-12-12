@@ -38,4 +38,13 @@ public class PostResult {
     public Map<String, Object> getData() {
         return data;
     }
+
+    @Override
+    public String toString() {
+        return "PostResult{" +
+                "statusCode=" + statusCode +
+                ", exception=" + exception +
+                ", data=" + data +
+                '}';
+    }
 }

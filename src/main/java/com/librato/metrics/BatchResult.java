@@ -36,4 +36,11 @@ public class BatchResult {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "BatchResult{" +
+                "posts=" + posts +
+                '}';
+    }
 }

@@ -1,8 +1,6 @@
 package com.librato.metrics;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.Future;
@@ -17,7 +15,6 @@ import static com.librato.metrics.Preconditions.checkNotNull;
 @SuppressWarnings("unused")
 public class LibratoBatch {
     public static final int DEFAULT_BATCH_SIZE = 500;
-    private static final Logger LOG = LoggerFactory.getLogger(LibratoBatch.class);
     private static final String LIB_VERSION = Versions.getVersion("META-INF/maven/com.librato.metrics/librato-java/pom.properties", LibratoBatch.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     protected final List<Measurement> measurements = new ArrayList<Measurement>();
@@ -132,8 +129,8 @@ public class LibratoBatch {
                 final String countersKey = "counters";
                 final String gaugesKey = "gauges";
 
-                payloadMap.put(countersKey, new ArrayList<Map<String,Object>>(counterData));
-                payloadMap.put(gaugesKey, new ArrayList<Map<String,Object>>(gaugeData));
+                payloadMap.put(countersKey, new ArrayList<Map<String, Object>>(counterData));
+                payloadMap.put(gaugesKey, new ArrayList<Map<String, Object>>(gaugeData));
                 result.addPostResult(postPortion(payloadMap));
                 payloadMap.remove(gaugesKey);
                 payloadMap.remove(countersKey);
@@ -141,7 +138,6 @@ public class LibratoBatch {
                 counterData.clear();
             }
         }
-        LOG.debug("Posted {} measurements", counter);
         return result;
     }
 
@@ -152,12 +148,8 @@ public class LibratoBatch {
             final Response response = future.get(timeout, timeoutUnit);
             final int statusCode = response.getStatusCode();
             String responseBody = response.getBody();
-            if (statusCode < 200 || statusCode >= 300) {
-                LOG.error("Received an error from Librato API. Code : {}, Message: {}", statusCode, responseBody);
-            }
             return new PostResult(chunk, statusCode, responseBody);
         } catch (Exception e) {
-            LOG.error("Unable to post to Librato API", e);
             return new PostResult(chunk, e);
         }
     }

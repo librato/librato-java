@@ -43,6 +43,7 @@ public class LibratoBatchTest {
         assertEquals(1, ((List<Map<String, Object>>) postResult.getData().get("counters")).size());
         assertEquals(0, ((List<Map<String, Object>>) postResult.getData().get("gauges")).size());
         assertTrue(result.success());
+        assertEquals(0, result.getFailedPosts().size());
     }
 
     @SuppressWarnings("unchecked")
@@ -60,6 +61,7 @@ public class LibratoBatchTest {
         assertEquals(0, ((List<Map<String, Object>>) postResult.getData().get("counters")).size());
         assertEquals(1, ((List<Map<String, Object>>) postResult.getData().get("gauges")).size());
         assertFalse(result.success());
+        assertEquals(1, result.getFailedPosts().size());
     }
 
     @Test

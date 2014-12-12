@@ -18,6 +18,16 @@ public class BatchResult {
         posts.add(result);
     }
 
+    public List<PostResult> getFailedPosts() {
+        List<PostResult> failed = new ArrayList<PostResult>();
+        for (PostResult post : posts) {
+            if (!post.success()) {
+                failed.add(post);
+            }
+        }
+        return failed;
+    }
+
     public boolean success() {
         for (PostResult post : posts) {
             if (!post.success()) {

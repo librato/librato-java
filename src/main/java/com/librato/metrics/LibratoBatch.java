@@ -151,10 +151,11 @@ public class LibratoBatch {
             final Future<Response> future = httpPoster.post(userAgent, payload);
             final Response response = future.get(timeout, timeoutUnit);
             final int statusCode = response.getStatusCode();
+            String responseBody = response.getBody();
             if (statusCode < 200 || statusCode >= 300) {
-                LOG.error("Received an error from Librato API. Code : {}, Message: {}", statusCode, response.getBody());
+                LOG.error("Received an error from Librato API. Code : {}, Message: {}", statusCode, responseBody);
             }
-            return new PostResult(chunk, statusCode);
+            return new PostResult(chunk, statusCode, responseBody);
         } catch (Exception e) {
             LOG.error("Unable to post to Librato API", e);
             return new PostResult(chunk, e);

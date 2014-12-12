@@ -97,7 +97,8 @@ public class LibratoBatch {
                 .build());
     }
 
-    public void post(String source, long epoch) {
+    public BatchResult post(String source, long epoch) {
+        final BatchResult result = new BatchResult();
         final Map<String, Object> payloadMap = new HashMap<String, Object>();
         payloadMap.put("source", source);
         payloadMap.put("measure_time", epoch);
@@ -131,9 +132,9 @@ public class LibratoBatch {
                 final String countersKey = "counters";
                 final String gaugesKey = "gauges";
 
-                payloadMap.put(countersKey, counterData);
-                payloadMap.put(gaugesKey, gaugeData);
-                postPortion(payloadMap);
+                payloadMap.put(countersKey, new ArrayList<Map<String,Object>>(counterData));
+                payloadMap.put(gaugesKey, new ArrayList<Map<String,Object>>(gaugeData));
+                result.addPostResult(postPortion(payloadMap));
                 payloadMap.remove(gaugesKey);
                 payloadMap.remove(countersKey);
                 gaugeData.clear();
@@ -141,9 +142,10 @@ public class LibratoBatch {
             }
         }
         LOG.debug("Posted {} measurements", counter);
+        return result;
     }
 
-    private void postPortion(Map<String, Object> chunk) {
+    private PostResult postPortion(Map<String, Object> chunk) {
         try {
             final String payload = OBJECT_MAPPER.writeValueAsString(chunk);
             final Future<Response> future = httpPoster.post(userAgent, payload);
@@ -152,8 +154,10 @@ public class LibratoBatch {
             if (statusCode < 200 || statusCode >= 300) {
                 LOG.error("Received an error from Librato API. Code : {}, Message: {}", statusCode, response.getBody());
             }
+            return new PostResult(chunk, statusCode);
         } catch (Exception e) {
             LOG.error("Unable to post to Librato API", e);
+            return new PostResult(chunk, e);
         }
     }
 }

@@ -12,9 +12,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static com.librato.metrics.HttpPoster.Response;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 
 public class LibratoBatchTest {
@@ -44,6 +42,7 @@ public class LibratoBatchTest {
         assertNull(postResult.getException());
         assertEquals(1, ((List<Map<String, Object>>) postResult.getData().get("counters")).size());
         assertEquals(0, ((List<Map<String, Object>>) postResult.getData().get("gauges")).size());
+        assertTrue(result.success());
     }
 
     @SuppressWarnings("unchecked")
@@ -60,6 +59,7 @@ public class LibratoBatchTest {
         assertNotNull(postResult.getException());
         assertEquals(0, ((List<Map<String, Object>>) postResult.getData().get("counters")).size());
         assertEquals(1, ((List<Map<String, Object>>) postResult.getData().get("gauges")).size());
+        assertFalse(result.success());
     }
 
     @Test

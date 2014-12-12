@@ -23,6 +23,10 @@ public class PostResult {
         this.statusCode = null;
     }
 
+    public boolean success() {
+        return statusCode != null && statusCode / 100 == 2;
+    }
+
     public Integer getStatusCode() {
         return statusCode;
     }

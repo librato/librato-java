@@ -17,4 +17,13 @@ public class BatchResult {
     void addPostResult(PostResult result) {
         posts.add(result);
     }
+
+    public boolean success() {
+        for (PostResult post : posts) {
+            if (!post.success()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

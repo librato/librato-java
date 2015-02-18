@@ -272,5 +272,40 @@ public class LibratoBatchTest {
         batch.post("junit", epoch);
         Mockito.verify(poster, Mockito.times(0)).post(anyString(), anyString());
     }
+
+    @Test
+    public void testAllowsMeasureTimeOverride() throws Exception {
+        final Response response = new FakeResponse(200);
+        final Future<Response> future = ReturningFuture.of(response);
+        Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
+        final long epoch = System.currentTimeMillis();
+        final LibratoBatch batch = new LibratoBatch(100, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        batch.addMeasurement(SingleValueGaugeMeasurement.builder("test-gauge", 42).setMeasureTime(1042L).build());
+        batch.addMeasurement(MultiSampleGaugeMeasurement.builder("multi-sample-gauge").setSum(42).setCount(1L).setMeasureTime(1043L).build());
+        batch.addMeasurement(SingleValueGaugeMeasurement.builder("test-gauge-no-measure-time", 42).build());
+        batch.addMeasurement(CounterMeasurement.builder("test-counter", 42L).setMeasureTime(1044L).build());
+
+        batch.post(source, epoch);
+        ArgumentCaptor<String> payloadCapture = ArgumentCaptor.forClass(String.class);
+        Mockito.verify(poster).post(Matchers.eq("test-agent librato-java/unknown"), payloadCapture.capture());
+        final Payload payload = Payload.parse(payloadCapture.getValue());
+        assertEquals(source, payload.getSource());
+        assertEquals(1, payload.getCounters().size());
+        Counter counter = payload.getCounters().get(0);
+        assertEquals(new Long(1044), counter.measureTime);
+        assertEquals(3, payload.getGauges().size());
+        for (Gauge gauge : payload.getGauges()) {
+            if (gauge.getName().equals("test-gauge")) {
+                assertEquals(new Long(1042), gauge.measureTime);
+            } else if (gauge.getName().equals("multi-sample-gauge")) {
+                assertEquals(new Long(1043), gauge.measureTime);
+            } else if (gauge.getName().equals("test-gauge-no-measure-time")) {
+                assertNull(gauge.measureTime);
+            } else {
+                throw new Exception("Unexpected gauge: " + gauge.getName());
+            }
+        }
+        assertEquals(epoch, payload.getMeasureTime());
+    }
 }
 

@@ -118,6 +118,9 @@ public class LibratoBatch {
             if (!measurement.getMetricAttributes().isEmpty()) {
                 data.put("attributes", measurement.getMetricAttributes());
             }
+            if (measurement.getMeasureTime() != null) {
+                data.put("measure_time", measurement.getMeasureTime());
+            }
             data.putAll(measurement.toMap());
             if (measurement instanceof CounterMeasurement) {
                 counterData.add(data);

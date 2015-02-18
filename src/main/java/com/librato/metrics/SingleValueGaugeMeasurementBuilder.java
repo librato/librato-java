@@ -9,6 +9,7 @@ public class SingleValueGaugeMeasurementBuilder {
     private String source = null;
     private Number period = null;
     private Map<String, Object> metricAttributes = new HashMap<String, Object>();
+    private Long measureTime;
 
     public SingleValueGaugeMeasurementBuilder(String name, Number reading) {
         this.name = name;
@@ -30,7 +31,12 @@ public class SingleValueGaugeMeasurementBuilder {
         return this;
     }
 
+    public SingleValueGaugeMeasurementBuilder setMeasureTime(Long measureTime) {
+        this.measureTime = measureTime;
+        return this;
+    }
+
     public SingleValueGaugeMeasurement build() {
-        return new SingleValueGaugeMeasurement(source, period, name, reading, metricAttributes);
+        return new SingleValueGaugeMeasurement(source, period, name, reading, metricAttributes, measureTime);
     }
 }

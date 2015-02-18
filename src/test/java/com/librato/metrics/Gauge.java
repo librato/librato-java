@@ -20,6 +20,8 @@ public class Gauge {
     Long count;
     @JsonProperty
     Number sum;
+    @JsonProperty("measure_time")
+    Long measureTime;
 
     public Gauge() {
         // jackson
@@ -86,6 +88,7 @@ public class Gauge {
         if (source != null ? !source.equals(gauge.source) : gauge.source != null) return false;
         if (sum != null ? !sum.equals(gauge.sum) : gauge.sum != null) return false;
         if (value != null ? !value.equals(gauge.value) : gauge.value != null) return false;
+        if (measureTime != null ? !measureTime.equals(gauge.measureTime) : gauge.measureTime != null) return false;
 
         return true;
     }
@@ -99,6 +102,7 @@ public class Gauge {
         result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
         result = 31 * result + (count != null ? count.hashCode() : 0);
         result = 31 * result + (sum != null ? sum.hashCode() : 0);
+        result = 31 * result + (measureTime != null ? measureTime.hashCode() : 0);
         return result;
     }
 

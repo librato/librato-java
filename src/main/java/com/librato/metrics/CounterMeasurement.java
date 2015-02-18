@@ -16,6 +16,7 @@ public class CounterMeasurement implements Measurement {
     private final String name;
     private final Long count;
     private final Map<String, Object> metricAttributes;
+    private final Long measureTime;
 
     public static CounterMeasurementBuilder builder(String name, Long count) {
         return new CounterMeasurementBuilder(name, count);
@@ -30,15 +31,20 @@ public class CounterMeasurement implements Measurement {
     }
 
     public CounterMeasurement(String source, Number period, String name, Long count) {
-        this(source, period, name, count, emptyAttributes);
+        this(source, period, name, count, emptyAttributes, null);
     }
 
-    public CounterMeasurement(String source, Number period, String name, Long count, Map<String, Object> metricAttributes) {
+    public CounterMeasurement(String source, Number period, String name, Long count, Map<String, Object> metricAttributes, Long measureTime) {
         this.source = source;
         this.period = period;
         this.name = checkNotNull(name);
         this.count = checkNotNull(count);
         this.metricAttributes = metricAttributes;
+        this.measureTime = measureTime;
+    }
+
+    public Long getMeasureTime() {
+        return measureTime;
     }
 
     public Map<String, Object> getMetricAttributes() {

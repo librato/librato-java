@@ -13,9 +13,15 @@ public class MultiSampleGaugeMeasurementBuilder {
     private Number min;
     private Number sumSquares;
     private Map<String, Object> metricAttributes = new HashMap<String, Object>();
+    private Long measureTime;
 
     public MultiSampleGaugeMeasurementBuilder(String name) {
         this.name = name;
+    }
+
+    public MultiSampleGaugeMeasurementBuilder setMeasureTime(Long measureTime) {
+        this.measureTime = measureTime;
+        return this;
     }
 
     public MultiSampleGaugeMeasurementBuilder setSource(String source) {
@@ -59,6 +65,6 @@ public class MultiSampleGaugeMeasurementBuilder {
     }
 
     public MultiSampleGaugeMeasurement build() {
-        return new MultiSampleGaugeMeasurement(source, period, name, count, sum, max, min, sumSquares, metricAttributes);
+        return new MultiSampleGaugeMeasurement(source, period, name, count, sum, max, min, sumSquares, metricAttributes, measureTime);
     }
 }

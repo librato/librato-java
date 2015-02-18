@@ -9,6 +9,7 @@ public class CounterMeasurementBuilder {
     private String source = null;
     private Number period = null;
     private Map<String, Object> metricAttributes = new HashMap<String, Object>();
+    private Long measureTime;
 
     public CounterMeasurementBuilder(String name, Long count) {
         this.name = name;
@@ -30,7 +31,12 @@ public class CounterMeasurementBuilder {
         return this;
     }
 
+    public CounterMeasurementBuilder setMeasureTime(Long measureTime) {
+        this.measureTime = measureTime;
+        return this;
+    }
+
     public CounterMeasurement build() {
-        return new CounterMeasurement(source, period, name, count, metricAttributes);
+        return new CounterMeasurement(source, period, name, count, metricAttributes, measureTime);
     }
 }

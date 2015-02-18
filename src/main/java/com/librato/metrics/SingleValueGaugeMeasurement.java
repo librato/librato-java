@@ -19,6 +19,7 @@ public class SingleValueGaugeMeasurement implements Measurement {
     private final String name;
     private final Number reading;
     private final Map<String, Object> metricAttributes;
+    private Long measureTime;
 
     public static SingleValueGaugeMeasurementBuilder builder(String name, Number reading) {
         return new SingleValueGaugeMeasurementBuilder(name, reading);
@@ -33,19 +34,24 @@ public class SingleValueGaugeMeasurement implements Measurement {
     }
 
     public SingleValueGaugeMeasurement(String source, Number period, String name, Number reading) {
-        this(source, period, name, reading, emptyAttributes);
+        this(source, period, name, reading, emptyAttributes, null);
     }
 
-    public SingleValueGaugeMeasurement(String source, Number period, String name, Number reading, Map<String, Object> metricAttributes) {
+    public SingleValueGaugeMeasurement(String source, Number period, String name, Number reading, Map<String, Object> metricAttributes, Long measureTime) {
         try {
             this.source = source;
             this.period = period;
             this.name = checkNotNull(name);
             this.reading = checkNumeric(checkNumeric(reading));
             this.metricAttributes = metricAttributes;
+            this.measureTime = measureTime;
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid single-gauge measurement name=" + name, e);
         }
+    }
+
+    public Long getMeasureTime() {
+        return measureTime;
     }
 
     public Map<String, Object> getMetricAttributes() {

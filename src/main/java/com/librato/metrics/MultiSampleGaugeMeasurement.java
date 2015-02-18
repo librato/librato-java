@@ -21,6 +21,7 @@ public class MultiSampleGaugeMeasurement implements Measurement {
     private final Number min;
     private final Number sumSquares;
     private final Map<String, Object> metricAttributes;
+    private final Long measureTime;
 
     public static MultiSampleGaugeMeasurementBuilder builder(String name) {
         return new MultiSampleGaugeMeasurementBuilder(name);
@@ -34,7 +35,8 @@ public class MultiSampleGaugeMeasurement implements Measurement {
                                        Number max,
                                        Number min,
                                        Number sumSquares,
-                                       Map<String, Object> metricAttributes) {
+                                       Map<String, Object> metricAttributes,
+                                       Long measureTime) {
         try {
             if (count == null || count == 0) {
                 throw new IllegalArgumentException("The Librato API requires the count to be > 0 for complex metrics. See http://dev.librato.com/v1/post/metrics");
@@ -48,9 +50,14 @@ public class MultiSampleGaugeMeasurement implements Measurement {
             this.min = checkNumeric(min);
             this.sumSquares = checkNumeric(sumSquares);
             this.metricAttributes = metricAttributes;
+            this.measureTime = measureTime;
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid multi-sample gauge measurement name=" + name, e);
         }
+    }
+
+    public Long getMeasureTime() {
+        return measureTime;
     }
 
     public Map<String, Object> getMetricAttributes() {

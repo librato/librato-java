@@ -8,6 +8,13 @@ import java.util.Map;
 public interface Measurement {
 
     /**
+     * @return the (unix) timestamp of the measure. Optional, null returned if no specific time
+     * is present. Instead the measure time will be taken from the top level of the POST
+     * payload to Librato
+     */
+    Long getMeasureTime();
+
+    /**
      * @return the source of the measurement
      */
     String getSource();

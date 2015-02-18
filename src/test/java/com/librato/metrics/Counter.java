@@ -16,8 +16,11 @@ public class Counter {
     Number value;
     @JsonProperty
     Map<String, Object> attributes = Collections.emptyMap();
+    @JsonProperty("measure_time")
+    Long measureTime;
 
     public Counter() {
+
         // jackson
     }
 
@@ -79,6 +82,7 @@ public class Counter {
         if (period != null ? !period.equals(counter.period) : counter.period != null) return false;
         if (name != null ? !name.equals(counter.name) : counter.name != null) return false;
         if (value != null ? !value.equals(counter.value) : counter.value != null) return false;
+        if (measureTime != null ? !measureTime.equals(counter.measureTime) : counter.measureTime != null) return false;
 
         return true;
     }

@@ -23,7 +23,7 @@ public class Payload {
     @JsonProperty
     List<Gauge> gauges;
     @JsonProperty("measure_time")
-    long measureTime;
+    Long measureTime;
 
     String getSource() {
         return source;
@@ -33,7 +33,7 @@ public class Payload {
         return counters;
     }
 
-    public long getMeasureTime() {
+    public Long getMeasureTime() {
         return measureTime;
     }
 

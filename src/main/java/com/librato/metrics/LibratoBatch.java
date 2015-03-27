@@ -94,11 +94,17 @@ public class LibratoBatch {
                 .build());
     }
 
-    public BatchResult post(String source, long epoch) {
+    public BatchResult post(String source) {
+        return post(source, null);
+    }
+
+    public BatchResult post(String source, Long epoch) {
         final BatchResult result = new BatchResult();
         final Map<String, Object> payloadMap = new HashMap<String, Object>();
         payloadMap.put("source", source);
-        payloadMap.put("measure_time", epoch);
+        if (epoch != null) {
+            payloadMap.put("measure_time", epoch);
+        }
         final List<Map<String, Object>> gaugeData = new ArrayList<Map<String, Object>>();
         final List<Map<String, Object>> counterData = new ArrayList<Map<String, Object>>();
 

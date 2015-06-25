@@ -107,4 +107,8 @@ public class NingHttpPoster implements HttpPoster {
         builder.setBody(payload);
         return new FutureAdapter(builder.execute());
     }
+
+    public void close() throws IOException {
+      httpClient.close();
+    }
 }

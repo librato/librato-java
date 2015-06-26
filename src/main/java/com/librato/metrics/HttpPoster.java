@@ -1,12 +1,13 @@
 package com.librato.metrics;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.Future;
 
 /**
  * Posts data to an HTTP endpoint.
  */
-public interface HttpPoster {
+public interface HttpPoster extends Closeable {
     /**
      * A generic interface to represent an HTTP response
      */

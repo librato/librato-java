@@ -65,6 +65,22 @@ public class LibratoBatchTest {
         assertEquals(0, result.getFailedPosts().size());
     }
 
+    @Test
+    public void testExposesResponseField() throws Exception {
+        final Response response = new FakeResponse(500, "server error");
+        final Future<Response> future = ReturningFuture.of(response);
+        Mockito.when(poster.post(anyString(), anyString())).thenReturn(future);
+        final long epoch = System.currentTimeMillis();
+        final LibratoBatch batch = new LibratoBatch(1, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
+        batch.addCounterMeasurement("apples", 1L);
+        BatchResult result = batch.post(source, epoch);
+        assertEquals(1, result.getPosts().size());
+        PostResult postResult = result.getPosts().iterator().next();
+        assertEquals(500, postResult.getStatusCode().intValue());
+        assertEquals("server error", postResult.getResponse());
+        assertNull(postResult.getException());
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void testReturnsBatchResponseOnException() throws Exception {

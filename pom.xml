@@ -96,7 +96,7 @@
         <dependency>
             <groupId>com.ning</groupId>
             <artifactId>async-http-client</artifactId>
-            <version>1.7.4</version>
+            <version>1.9.32</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>

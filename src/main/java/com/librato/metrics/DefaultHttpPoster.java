@@ -17,11 +17,21 @@ import java.util.concurrent.*;
 public class DefaultHttpPoster implements HttpPoster {
     private static final Logger log = LoggerFactory.getLogger(DefaultHttpPoster.class);
     private static final String UTF_8 = "UTF-8";
+    private static final int defaultConnectTimeoutMillis = 5000;
+    private static final int defaultReadTimeoutMillis = 10000;
     private final URL url;
     private final String authHeader;
     private final ExecutorService executor;
+    private final int connectTimeoutMillis;
+    private final int readTimeoutMillis;
 
     public DefaultHttpPoster(String url, String email, String token) {
+        this(url, email, token, defaultConnectTimeoutMillis, defaultReadTimeoutMillis);
+    }
+
+    public DefaultHttpPoster(String url, String email, String token, int connectTimeoutMillis, int readTimeoutMillis) {
+        this.connectTimeoutMillis = connectTimeoutMillis;
+        this.readTimeoutMillis = readTimeoutMillis;
         this.authHeader = Authorization.buildAuthHeader(email, token);
         try {
             this.url = new URL(url);
@@ -54,30 +64,36 @@ public class DefaultHttpPoster implements HttpPoster {
 
     Response doPost(String userAgent, final String payload) throws IOException {
         HttpURLConnection connection = open(url);
-        connection.setDoOutput(true);
-        connection.setDoInput(true);
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
-        connection.setRequestMethod("POST");
-        connection.setInstanceFollowRedirects(false);
-        connection.setRequestProperty("Authorization", authHeader);
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("User-Agent", userAgent);
-        connection.connect();
-        OutputStream outputStream = connection.getOutputStream();
+        final int responseCode;
+        final String responseBody;
         try {
-            outputStream.write(payload.getBytes(Charset.forName(UTF_8)));
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setConnectTimeout(connectTimeoutMillis);
+            connection.setReadTimeout(readTimeoutMillis);
+            connection.setRequestMethod("POST");
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestProperty("Authorization", authHeader);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("User-Agent", userAgent);
+            connection.connect();
+            OutputStream outputStream = connection.getOutputStream();
+            try {
+                outputStream.write(payload.getBytes(Charset.forName(UTF_8)));
+            } finally {
+                close(outputStream);
+            }
+            responseCode = connection.getResponseCode();
+            InputStream responseStream;
+            if (responseCode / 100 == 2) {
+                responseStream = connection.getInputStream();
+            } else {
+                responseStream = connection.getErrorStream();
+            }
+            responseBody = readResponse(responseStream);
         } finally {
-            close(outputStream);
+            connection.disconnect();
         }
-        final int responseCode = connection.getResponseCode();
-        InputStream responseStream;
-        if (responseCode / 100 == 2) {
-            responseStream = connection.getInputStream();
-        } else {
-            responseStream = connection.getErrorStream();
-        }
-        final String responseBody = readResponse(responseStream);
         return new Response() {
             @Override
             public int getStatusCode() {

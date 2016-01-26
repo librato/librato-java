@@ -3,7 +3,6 @@ package com.librato.metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -21,6 +20,12 @@ public class DefaultHttpPoster implements HttpPoster {
     private final URL url;
     private final String authHeader;
     private final ExecutorService executor;
+
+    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+        DefaultHttpPoster poster = new DefaultHttpPoster("http://localhost:5000", "collin@librato.com", "token");
+        Future<Response> future = poster.post("myagent", "lol\n");
+        future.get();
+    }
 
     public DefaultHttpPoster(String url, String email, String token) {
         this.authHeader = Authorization.buildAuthHeader(email, token);
@@ -40,7 +45,8 @@ public class DefaultHttpPoster implements HttpPoster {
             }
         };
         RejectedExecutionHandler handler = new ThreadPoolExecutor.CallerRunsPolicy();
-        this.executor = new ThreadPoolExecutor(1, 1, 120, TimeUnit.SECONDS, queue, threadFactory, handler);
+        //this.executor = new ThreadPoolExecutor(1, 1, 120, TimeUnit.SECONDS, queue, threadFactory, handler);
+        this.executor = Executors.newSingleThreadExecutor();
     }
 
     class CouldNotPostMeasurementsException extends RuntimeException {
@@ -57,6 +63,7 @@ public class DefaultHttpPoster implements HttpPoster {
                 try {
                     return doPost(userAgent, payload);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     throw new CouldNotPostMeasurementsException(e);
                 }
             }
@@ -66,8 +73,8 @@ public class DefaultHttpPoster implements HttpPoster {
     Response doPost(String userAgent, final String payload) throws IOException {
         HttpURLConnection connection = open(url);
         connection.setDoOutput(true);
-        connection.setConnectTimeout(5);
-        connection.setReadTimeout(5);
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
         connection.setRequestMethod("POST");
         connection.setInstanceFollowRedirects(false);
         connection.setRequestProperty("Authorization", authHeader);
@@ -101,9 +108,9 @@ public class DefaultHttpPoster implements HttpPoster {
         }
     }
 
-    HttpsURLConnection open(URL url) throws IOException {
+    HttpURLConnection open(URL url) throws IOException {
         try {
-            return (HttpsURLConnection) url.openConnection();
+            return (HttpURLConnection) url.openConnection();
         } catch (ClassCastException ignore) {
             throw new RuntimeException("URL " + url + " must use either http or https");
         }

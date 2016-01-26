@@ -55,6 +55,7 @@ public class DefaultHttpPoster implements HttpPoster {
     Response doPost(String userAgent, final String payload) throws IOException {
         HttpURLConnection connection = open(url);
         connection.setDoOutput(true);
+        connection.setDoInput(true);
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
         connection.setRequestMethod("POST");
@@ -69,9 +70,14 @@ public class DefaultHttpPoster implements HttpPoster {
         } finally {
             close(outputStream);
         }
-        InputStream inputStream = connection.getInputStream();
-        final String responseBody = readResponse(inputStream);
         final int responseCode = connection.getResponseCode();
+        InputStream responseStream;
+        if (responseCode / 100 == 2) {
+            responseStream = connection.getInputStream();
+        } else {
+            responseStream = connection.getErrorStream();
+        }
+        final String responseBody = readResponse(responseStream);
         return new Response() {
             @Override
             public int getStatusCode() {

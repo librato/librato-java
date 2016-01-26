@@ -38,7 +38,15 @@ public class DefaultHttpPoster implements HttpPoster {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Could not parse URL", e);
         }
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread();
+                thread.setName("librato-http-poster");
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
     }
 
     class CouldNotPostMeasurementsException extends RuntimeException {

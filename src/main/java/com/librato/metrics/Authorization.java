@@ -1,7 +1,6 @@
 package com.librato.metrics;
 
-import com.ning.http.util.Base64;
-
+import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.Charset;
 
 public class Authorization {
@@ -23,6 +22,10 @@ public class Authorization {
         if (token == null || "".equals(token)) {
             throw new IllegalArgumentException("Token must be specified");
         }
-        return String.format("Basic %s", Base64.encode((username + ":" + token).getBytes(Charset.forName("UTF-8"))));
+        return String.format("Basic %s", base64Encode((username + ":" + token).getBytes(Charset.forName("UTF-8"))));
+    }
+
+    private static String base64Encode(byte[] bytes) {
+        return DatatypeConverter.printBase64Binary(bytes);
     }
 }

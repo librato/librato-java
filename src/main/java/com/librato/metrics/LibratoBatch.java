@@ -3,6 +3,7 @@ package com.librato.metrics;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -154,12 +155,23 @@ public class LibratoBatch {
         try {
             final String payload = OBJECT_MAPPER.writeValueAsString(chunk);
             final Future<Response> future = httpPoster.post(userAgent, payload);
-            final Response response = future.get(timeout, timeoutUnit);
+            final Response response = getFuture(future);
             final int statusCode = response.getStatusCode();
             String responseBody = response.getBody();
             return new PostResult(chunk, statusCode, responseBody);
         } catch (Exception e) {
             return new PostResult(chunk, e);
+        }
+    }
+
+    private Response getFuture(Future<Response> future) throws Exception {
+        try {
+            return future.get(timeout, timeoutUnit);
+        } catch (InterruptedException ignore) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted");
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e.getCause());
         }
     }
 }

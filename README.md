@@ -22,12 +22,12 @@ etc if you have metrics with dashes in the names and upgrade to this version of 
     <dependency>
         <groupId>com.librato.metrics</groupId>
         <artifactId>librato-java</artifactId>
-        <version>1.0.10</version>
+        <version>1.0.11</version>
     </dependency>
     
 ## Usage
 
-To use `librato-java` you must first setup the `NingHttpPoster` (or use your own implementation), which can then be
+To use `librato-java` you must first setup the `DefaultHttpPoster` (or use your own implementation), which can then be
 re-used across subsequent `LibratoBatch` submissions.
 
 ### Setup the HTTP Poster
@@ -35,7 +35,7 @@ re-used across subsequent `LibratoBatch` submissions.
     static String email = `your Librato email`
     static String apiToken = `your Librato api token`
     static String apiUrl = "https://metrics-api.librato.com/v1/metrics"
-    static HttpPoster poster = NingHttpPoster.newPoster(email, apiToken, apiUrl)
+    static HttpPoster poster = new DefaultHttpPoster(apiUrl, email, apiToken);
     
 ### Using LibratoBatch
     

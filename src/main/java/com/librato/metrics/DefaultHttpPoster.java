@@ -74,34 +74,30 @@ public class DefaultHttpPoster implements HttpPoster {
         HttpURLConnection connection = open(url);
         final int responseCode;
         final String responseBody;
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setConnectTimeout(connectTimeoutMillis);
+        connection.setReadTimeout(readTimeoutMillis);
+        connection.setRequestMethod("POST");
+        connection.setInstanceFollowRedirects(false);
+        connection.setRequestProperty("Authorization", authHeader);
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("User-Agent", userAgent);
+        connection.connect();
+        OutputStream outputStream = connection.getOutputStream();
         try {
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.setConnectTimeout(connectTimeoutMillis);
-            connection.setReadTimeout(readTimeoutMillis);
-            connection.setRequestMethod("POST");
-            connection.setInstanceFollowRedirects(false);
-            connection.setRequestProperty("Authorization", authHeader);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("User-Agent", userAgent);
-            connection.connect();
-            OutputStream outputStream = connection.getOutputStream();
-            try {
-                outputStream.write(payload.getBytes(Charset.forName(UTF_8)));
-            } finally {
-                close(outputStream);
-            }
-            responseCode = connection.getResponseCode();
-            InputStream responseStream;
-            if (responseCode / 100 == 2) {
-                responseStream = connection.getInputStream();
-            } else {
-                responseStream = connection.getErrorStream();
-            }
-            responseBody = readResponse(responseStream);
+            outputStream.write(payload.getBytes(Charset.forName(UTF_8)));
         } finally {
-            connection.disconnect();
+            close(outputStream);
         }
+        responseCode = connection.getResponseCode();
+        InputStream responseStream;
+        if (responseCode / 100 == 2) {
+            responseStream = connection.getInputStream();
+        } else {
+            responseStream = connection.getErrorStream();
+        }
+        responseBody = readResponse(responseStream);
         return new Response() {
             @Override
             public int getStatusCode() {

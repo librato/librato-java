@@ -21,12 +21,6 @@ public class DefaultHttpPoster implements HttpPoster {
     private final String authHeader;
     private final ExecutorService executor;
 
-    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
-        DefaultHttpPoster poster = new DefaultHttpPoster("http://localhost:5000", "collin@librato.com", "token");
-        Future<Response> future = poster.post("myagent", "lol\n");
-        future.get();
-    }
-
     public DefaultHttpPoster(String url, String email, String token) {
         this.authHeader = Authorization.buildAuthHeader(email, token);
         try {

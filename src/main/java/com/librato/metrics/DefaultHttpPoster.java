@@ -1,5 +1,8 @@
 package com.librato.metrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,6 +17,7 @@ import java.util.concurrent.*;
  * reduce dependencies.
  */
 public class DefaultHttpPoster implements HttpPoster {
+    private static final Logger log = LoggerFactory.getLogger(DefaultHttpPoster.class);
     private final URL url;
     private final String authHeader;
     private final ExecutorService executor;
@@ -39,12 +43,22 @@ public class DefaultHttpPoster implements HttpPoster {
         this.executor = new ThreadPoolExecutor(1, 1, 120, TimeUnit.SECONDS, queue, threadFactory, handler);
     }
 
+    class CouldNotPostMeasurementsException extends RuntimeException {
+        public CouldNotPostMeasurementsException(Throwable cause) {
+            super("Could not post measures to " + url, cause);
+        }
+    }
+
     @Override
     public Future<Response> post(final String userAgent, final String payload) throws IOException {
         return executor.submit(new Callable<Response>() {
             @Override
             public Response call() throws Exception {
-                return doPost(userAgent, payload);
+                try {
+                    return doPost(userAgent, payload);
+                } catch (Exception e) {
+                    throw new CouldNotPostMeasurementsException(e);
+                }
             }
         });
     }
@@ -52,6 +66,8 @@ public class DefaultHttpPoster implements HttpPoster {
     Response doPost(String userAgent, final String payload) throws IOException {
         HttpURLConnection connection = open(url);
         connection.setDoOutput(true);
+        connection.setConnectTimeout(5);
+        connection.setReadTimeout(5);
         connection.setRequestMethod("POST");
         connection.setInstanceFollowRedirects(false);
         connection.setRequestProperty("Authorization", authHeader);
@@ -95,5 +111,16 @@ public class DefaultHttpPoster implements HttpPoster {
 
     @Override
     public void close() throws IOException {
+        executor.shutdown();
+        try {
+            long timeout = 1L;
+            TimeUnit unit = TimeUnit.MINUTES;
+            if (!executor.awaitTermination(timeout, unit)) {
+                log.warn("Could not shutdown after {} {}", timeout, unit);
+            }
+        } catch (InterruptedException ignored) {
+            Thread.currentThread().interrupt();
+            log.warn("Interrupted during shutdown");
+        }
     }
 }

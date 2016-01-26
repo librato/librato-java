@@ -11,7 +11,7 @@ public interface HttpPoster extends Closeable {
     /**
      * A generic interface to represent an HTTP response
      */
-    public static interface Response {
+    interface Response {
         int getStatusCode();
         String getBody() throws IOException;
     }

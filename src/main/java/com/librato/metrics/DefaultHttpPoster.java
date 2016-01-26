@@ -16,7 +16,7 @@ import java.util.concurrent.*;
  */
 public class DefaultHttpPoster implements HttpPoster {
     private static final Logger log = LoggerFactory.getLogger(DefaultHttpPoster.class);
-    public static final String UTF_8 = "UTF-8";
+    private static final String UTF_8 = "UTF-8";
     private final URL url;
     private final String authHeader;
     private final ExecutorService executor;
@@ -108,8 +108,11 @@ public class DefaultHttpPoster implements HttpPoster {
 
     void close(Closeable closeable) {
         try {
-            closeable.close();
-        } catch (IOException ignore) {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (IOException e) {
+            log.warn("Could not close " + closeable, e);
         }
     }
 

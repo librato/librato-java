@@ -3,8 +3,7 @@ package com.librato.metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,6 +16,7 @@ import java.util.concurrent.*;
  */
 public class DefaultHttpPoster implements HttpPoster {
     private static final Logger log = LoggerFactory.getLogger(DefaultHttpPoster.class);
+    public static final String UTF_8 = "UTF-8";
     private final URL url;
     private final String authHeader;
     private final ExecutorService executor;
@@ -28,18 +28,6 @@ public class DefaultHttpPoster implements HttpPoster {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Could not parse URL", e);
         }
-        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>(1);
-        ThreadFactory threadFactory = new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread thread = new Thread();
-                thread.setName("librato-http-poster");
-                thread.setDaemon(true);
-                return thread;
-            }
-        };
-        RejectedExecutionHandler handler = new ThreadPoolExecutor.CallerRunsPolicy();
-        //this.executor = new ThreadPoolExecutor(1, 1, 120, TimeUnit.SECONDS, queue, threadFactory, handler);
         this.executor = Executors.newSingleThreadExecutor();
     }
 
@@ -77,10 +65,12 @@ public class DefaultHttpPoster implements HttpPoster {
         connection.connect();
         OutputStream outputStream = connection.getOutputStream();
         try {
-            outputStream.write(payload.getBytes(Charset.forName("UTF-8")));
+            outputStream.write(payload.getBytes(Charset.forName(UTF_8)));
         } finally {
             close(outputStream);
         }
+        InputStream inputStream = connection.getInputStream();
+        final String responseBody = readResponse(inputStream);
         final int responseCode = connection.getResponseCode();
         return new Response() {
             @Override
@@ -90,14 +80,29 @@ public class DefaultHttpPoster implements HttpPoster {
 
             @Override
             public String getBody() throws IOException {
-                return payload;
+                return responseBody;
             }
         };
     }
 
-    void close(OutputStream outputStream) {
+    private String readResponse(InputStream in) throws IOException {
         try {
-            outputStream.close();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) > 0) {
+                bos.write(buffer, 0, bytesRead);
+            }
+            byte[] bytes = bos.toByteArray();
+            return new String(bytes, Charset.forName(UTF_8));
+        } finally {
+            close(in);
+        }
+    }
+
+    void close(Closeable closeable) {
+        try {
+            closeable.close();
         } catch (IOException ignore) {
         }
     }

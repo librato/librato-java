@@ -41,7 +41,7 @@ public class DefaultHttpPoster implements HttpPoster {
         this.executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
-                Thread thread = new Thread();
+                Thread thread = new Thread(r);
                 thread.setName("librato-http-poster");
                 thread.setDaemon(true);
                 return thread;

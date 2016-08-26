@@ -49,6 +49,17 @@ and then adds gauges and counters to it, and then finally posts the batch to Lib
 	Sanitizer sanitizer = Sanitizer.NO_OP // or, supply your own
     LibratoBatch batch = new LibratoBatch(batchSize, sanitizer, timeout, timeoutUnit, agent, poster)
     
+You can use `LibratoBatchBuilder` for less and simpler code:
+
+	LibratoBatch batch = new LibratoBatchBuilder(email, apiToken).build();
+	
+Some of the parameters can be customized:
+
+	LibratoBatch batch = new LibratoBatchBuilder(email, apiToken)
+		.withBatchSize(...)
+		.withSanitizer(...)
+		.withTimeoutInSeconds(...).build();
+    
 Once you have created your `batch`, then you can add measurements to it.
 
     batch.addGaugeMeasurement("apples", 100)

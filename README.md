@@ -46,6 +46,7 @@ and then adds gauges and counters to it, and then finally posts the batch to Lib
 	static long timeout = 10L
 	static TimeUnit timeoutUnit = TimeUnit.SECONDS
 	static String agent = `your http agent name -- will be saved with your metric`
+	Sanitizer sanitizer = Sanitizer.NO_OP // or, supply your own
     LibratoBatch batch = new LibratoBatch(batchSize, sanitizer, timeout, timeoutUnit, agent, poster)
     
 Once you have created your `batch`, then you can add measurements to it.

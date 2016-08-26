@@ -8,7 +8,7 @@ import static com.librato.metrics.Preconditions.checkNumeric;
 
 /**
  * A class for representing a gauge reading that might come from multiple samples
- * <p/>
+ * <p>
  * See http://dev.librato.com/v1/post/metrics for why some fields are optional
  */
 public class MultiSampleGaugeMeasurement implements Measurement {

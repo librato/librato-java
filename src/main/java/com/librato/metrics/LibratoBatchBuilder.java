@@ -3,7 +3,7 @@ package com.librato.metrics;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author Paul Wellner Bou <paul@wellnerbou.de>
+ * @author Paul Wellner Bou &lt;paul@wellnerbou.de&gt;
  */
 public class LibratoBatchBuilder {
 

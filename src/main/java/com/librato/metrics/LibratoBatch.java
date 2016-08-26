@@ -56,6 +56,7 @@ public class LibratoBatch {
 
     /**
      * for advanced measurement fu
+	 * @param measurement
      */
     public void addMeasurement(Measurement measurement) {
         measurements.add(measurement);

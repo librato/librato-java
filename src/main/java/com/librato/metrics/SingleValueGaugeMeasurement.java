@@ -9,7 +9,7 @@ import static com.librato.metrics.Preconditions.checkNumeric;
 
 /**
  * A class representing a single gauge reading
- * <p/>
+ * <p>
  * See http://dev.librato.com/v1/post/metrics for an explanation of basic vs multi-sample gauge
  */
 public class SingleValueGaugeMeasurement implements Measurement {

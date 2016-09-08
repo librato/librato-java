@@ -1,6 +1,6 @@
 package com.librato.metrics;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -56,6 +56,7 @@ public class LibratoBatch {
 
     /**
      * for advanced measurement fu
+     * @param measurement measurement param
      */
     public void addMeasurement(Measurement measurement) {
         measurements.add(measurement);

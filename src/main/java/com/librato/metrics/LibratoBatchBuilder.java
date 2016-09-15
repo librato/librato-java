@@ -7,19 +7,16 @@ import java.util.concurrent.TimeUnit;
  */
 public class LibratoBatchBuilder {
 
-	public static final String LIBRATO_METRICS_URL_V1 = "https://metrics-api.librato.com/v1/metrics";
-	public static final String DEFAULT_USER_AGENT = "Librato Java Library";
-	public static final int DEFAULT_POST_BATCH_SIZE = 300;
-	public static final long DEFAULT_TIMEOUT_SECONDS = 10L;
-	final private String email;
-	final private String apiKey;
+	private static final String DEFAULT_USER_AGENT = "Librato Java Library";
+	private static final int DEFAULT_POST_BATCH_SIZE = 300;
+	private static final long DEFAULT_TIMEOUT_SECONDS = 10L;
 	private Long seconds = DEFAULT_TIMEOUT_SECONDS;
 	private int batchSize = DEFAULT_POST_BATCH_SIZE;
 	private Sanitizer sanitizer = Sanitizer.NO_OP;
+	private HttpPoster httpPoster;
 
-	public LibratoBatchBuilder(String email, String apiKey) {
-		this.email = email;
-		this.apiKey = apiKey;
+	public LibratoBatchBuilder(HttpPoster httpPoster) {
+		this.httpPoster = httpPoster;
 	}
 
 	public LibratoBatchBuilder withTimeoutInSeconds(Long seconds) {
@@ -38,7 +35,6 @@ public class LibratoBatchBuilder {
 	}
 
 	public LibratoBatch build() {
-		final DefaultHttpPoster httpPoster = new DefaultHttpPoster(LIBRATO_METRICS_URL_V1, email, apiKey);
 		return new LibratoBatch(batchSize, sanitizer, seconds, TimeUnit.SECONDS, DEFAULT_USER_AGENT, httpPoster);
 	}
 }

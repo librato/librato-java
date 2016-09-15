@@ -15,6 +15,9 @@ import java.util.concurrent.*;
  * reduce dependencies.
  */
 public class DefaultHttpPoster implements HttpPoster {
+
+    public static final String LIBRATO_METRICS_URL_V1 = "https://metrics-api.librato.com/v1/metrics";
+
     private static final Logger log = LoggerFactory.getLogger(DefaultHttpPoster.class);
     private static final String UTF_8 = "UTF-8";
     private static final int defaultConnectTimeoutMillis = 5000;
@@ -24,6 +27,10 @@ public class DefaultHttpPoster implements HttpPoster {
     private final ExecutorService executor;
     private final int connectTimeoutMillis;
     private final int readTimeoutMillis;
+
+    public DefaultHttpPoster(String email, String token) {
+        this(LIBRATO_METRICS_URL_V1, email, token, defaultConnectTimeoutMillis, defaultReadTimeoutMillis);
+    }
 
     public DefaultHttpPoster(String url, String email, String token) {
         this(url, email, token, defaultConnectTimeoutMillis, defaultReadTimeoutMillis);

@@ -34,4 +34,10 @@ public class CounterMeasure extends AbstractMeasure {
         this.source = source;
         return this;
     }
+
+    public CounterMeasure setMetricAttributes(Map<String, Object> attributes) {
+        this.metricAttributes = attributes;
+        return this;
+    }
+
 }

@@ -54,4 +54,11 @@ public class TaggedMeasure extends AbstractMeasure {
         this.period = period;
         return this;
     }
+
+    public TaggedMeasure setMetricAttributes(Map<String, Object> attributes) {
+        this.metricAttributes = attributes;
+        return this;
+    }
+
+
 }

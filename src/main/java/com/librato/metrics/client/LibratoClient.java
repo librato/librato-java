@@ -12,13 +12,14 @@ import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
  */
 public class LibratoClient {
     private static final String LIB_VERSION = Versions.getVersion("META-INF/maven/com.librato.metrics/librato-java/pom.properties", LibratoBatch.class);
-    private final URI sdURI;
-    private final URI mdURI;
+    private final URI uri;
     private final int batchSize;
     private final Duration connectTimeout;
     private final Duration readTimeout;
     private final IPoster poster;
     private final ExecutorService executor;
+    private final SDResponseConverter sdResponseConverter = new SDResponseConverter();
+    private final MDResponseConverter mdResponseConverter = new MDResponseConverter();
     private final Map<String, String> measurementPostHeaders = new HashMap<String, String>();
 
     public static LibratoClientBuilder builder(String email, String token) {
@@ -26,13 +27,12 @@ public class LibratoClient {
     }
 
     LibratoClient(LibratoClientAttributes attrs) {
-        this.sdURI = attrs.metricURI;
-        this.mdURI = attrs.taggedURI;
+        this.uri = attrs.uri;
         this.batchSize = attrs.batchSize;
         this.connectTimeout = attrs.connectTimeout;
         this.readTimeout = attrs.readTimeout;
         this.poster = attrs.poster;
-        LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>(attrs.maxInflightRequests);
+        BlockingQueue<Runnable> queue = new SynchronousQueue<Runnable>();
         ThreadFactory threadFactory = new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
@@ -42,7 +42,7 @@ public class LibratoClient {
                 return thread;
             }
         };
-        this.executor = new ThreadPoolExecutor(0, 2, 60, TimeUnit.SECONDS, queue, threadFactory, new CallerRunsPolicy());
+        this.executor = new ThreadPoolExecutor(0, attrs.maxInflightRequests, 10, TimeUnit.SECONDS, queue, threadFactory, new CallerRunsPolicy());
         measurementPostHeaders.put("Content-Type", "application/json");
         measurementPostHeaders.put("Authorization", Authorization.buildAuthHeader(attrs.email, attrs.token));
         measurementPostHeaders.put("User-Agent", LIB_VERSION);
@@ -65,7 +65,7 @@ public class LibratoClient {
         Long epoch = measures.getEpoch();
         Future<List<PostResult>> sdFuture = null;
         if (!sdMeasures.isEmpty()) {
-            sdFuture = postMeasures(sdURI.toString() + "/v1/metrics", epoch, sdMeasures, new IBuildsPayload() {
+            sdFuture = postMeasures("/v1/metrics", epoch, sdMeasures, sdResponseConverter, new IBuildsPayload() {
                 @Override
                 public byte[] build(Long epoch, List<IMeasure> batch) {
                     return buildSDPayload(epoch, batch);
@@ -74,7 +74,7 @@ public class LibratoClient {
         }
         Future<List<PostResult>> mdFuture = null;
         if (!mdMeasures.isEmpty()) {
-            mdFuture = postMeasures(mdURI.toString() + "/v1/measurements", epoch, mdMeasures, new IBuildsPayload() {
+            mdFuture = postMeasures("/v1/measurements", epoch, mdMeasures, mdResponseConverter, new IBuildsPayload() {
                 @Override
                 public byte[] build(Long epoch, List<IMeasure> batch) {
                     return buildMDPayload(epoch, batch);
@@ -82,10 +82,10 @@ public class LibratoClient {
             });
         }
         if (sdFuture != null) {
-            result.sdResults.addAll(Futures.get(sdFuture));
+            result.results.addAll(Futures.get(sdFuture));
         }
         if (mdFuture != null) {
-            result.mdResults.addAll(Futures.get(mdFuture));
+            result.results.addAll(Futures.get(mdFuture));
         }
         return result;
     }
@@ -93,6 +93,7 @@ public class LibratoClient {
     private Future<List<PostResult>> postMeasures(final String uri,
                                                   final Long epoch,
                                                   final List<IMeasure> measures,
+                                                  final IResponseConverter responseConverter,
                                                   final IBuildsPayload payloadBuilder) {
         return executor.submit(new Callable<List<PostResult>>() {
             @Override
@@ -101,10 +102,10 @@ public class LibratoClient {
                 for (List<IMeasure> batch : Lists.partition(measures, LibratoClient.this.batchSize)) {
                     byte[] payload = payloadBuilder.build(epoch, batch);
                     try {
-                        HttpResponse response = poster.post(uri, connectTimeout, readTimeout, measurementPostHeaders, payload);
-                        results.add(new PostResult(payload, response));
+                        HttpResponse response = poster.post(fullUrl(uri), connectTimeout, readTimeout, measurementPostHeaders, payload);
+                        results.add(responseConverter.convert(payload, response));
                     } catch (Exception e) {
-                        results.add(new PostResult(payload, e));
+                        results.add(responseConverter.convert(payload, e));
                     }
                 }
                 return results;
@@ -130,7 +131,19 @@ public class LibratoClient {
         return Json.serialize(payload);
     }
 
-    private byte[] buildMDPayload(long epoch, List<IMeasure> measures) {
-        throw new UnsupportedOperationException("MD payloads not supported yet");
+    private byte[] buildMDPayload(Long epoch, List<IMeasure> measures) {
+        final Map<String, Object> payload = new HashMap<String, Object>();
+        Maps.putIfNotNull(payload, "time", epoch);
+        List<Map<String, Object>> gauges = new LinkedList<Map<String, Object>>();
+        for (IMeasure measure : measures) {
+            Map<String, Object> measureMap = measure.toMap();
+            gauges.add(measureMap);
+        }
+        Maps.putIfNotEmpty(payload, "measurements", gauges);
+        return Json.serialize(payload);
+    }
+
+    private String fullUrl(String path) {
+        return this.uri.toString() + path;
     }
 }

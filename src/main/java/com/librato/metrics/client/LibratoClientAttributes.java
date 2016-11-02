@@ -4,8 +4,7 @@ import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 public class LibratoClientAttributes {
-    public URI metricURI = URI.create("https://metrics-api.librato.com");
-    public URI taggedURI = URI.create("https://measurements-api.librato.com");
+    public URI uri = URI.create("https://metrics-api.librato.com");
     public int batchSize = 500;
     public Duration connectTimeout = new Duration(5, TimeUnit.SECONDS);
     public Duration readTimeout = new Duration(10, TimeUnit.SECONDS);

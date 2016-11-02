@@ -18,12 +18,19 @@ public class Measures {
         this.epoch = epoch;
     }
 
+    public Measures add(TaggedMeasure measure) {
+        return addMeasure(measure);
+    }
+
     public Measures add(CounterMeasure measure) {
-        this.measures.add(measure);
-        return this;
+        return addMeasure(measure);
     }
 
     public Measures add(GaugeMeasure measure) {
+        return addMeasure(measure);
+    }
+
+    private Measures addMeasure(IMeasure measure) {
         this.measures.add(measure);
         return this;
     }

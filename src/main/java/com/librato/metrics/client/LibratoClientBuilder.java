@@ -10,13 +10,8 @@ public class LibratoClientBuilder {
         attrs.token = token;
     }
 
-    public LibratoClientBuilder setMetricURI(String uri) {
-        this.attrs.metricURI = URI.create(uri);
-        return this;
-    }
-
-    public LibratoClientBuilder setTaggedURI(String uri) {
-        this.attrs.taggedURI = URI.create(uri);
+    public LibratoClientBuilder setURI(String uri) {
+        this.attrs.uri = URI.create(uri);
         return this;
     }
 

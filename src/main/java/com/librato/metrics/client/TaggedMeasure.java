@@ -49,4 +49,9 @@ public class TaggedMeasure extends AbstractMeasure {
     public boolean isGauge() {
         return true;
     }
+
+    public TaggedMeasure setPeriod(int period) {
+        this.period = period;
+        return this;
+    }
 }

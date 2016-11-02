@@ -317,7 +317,7 @@ public class LibratoBatchTest {
         final LibratoBatch batch = new LibratoBatch(100, Sanitizer.NO_OP, 1, TimeUnit.SECONDS, agent, poster);
         batch.addMeasurement(SingleValueGaugeMeasurement.builder("test-gauge", 42).setMeasureTime(1042L).build());
         batch.addMeasurement(MultiSampleGaugeMeasurement.builder("multi-sample-gauge").setSum(42).setCount(1L).setMeasureTime(1043L).build());
-        batch.addMeasurement(SingleValueGaugeMeasurement.builder("test-gauge-no-measure-time", 42).build());
+        batch.addMeasurement(SingleValueGaugeMeasurement.builder("test-gauge-no-client-time", 42).build());
         batch.addMeasurement(CounterMeasurement.builder("test-counter", 42L).setMeasureTime(1044L).build());
 
         batch.post(source, epoch);
@@ -334,7 +334,7 @@ public class LibratoBatchTest {
                 assertEquals(new Long(1042), gauge.measureTime);
             } else if (gauge.getName().equals("multi-sample-gauge")) {
                 assertEquals(new Long(1043), gauge.measureTime);
-            } else if (gauge.getName().equals("test-gauge-no-measure-time")) {
+            } else if (gauge.getName().equals("test-gauge-no-client-time")) {
                 assertNull(gauge.measureTime);
             } else {
                 throw new Exception("Unexpected gauge: " + gauge.getName());

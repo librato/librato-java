@@ -1,6 +1,7 @@
 package com.librato.metrics;
 
 import com.librato.metrics.client.Duration;
+import com.librato.metrics.client.IPoster;
 
 import java.net.URI;
 
@@ -28,7 +29,12 @@ public class LibratoClientBuilder {
     }
 
     public LibratoClientBuilder setTimeout(Duration timeout) {
-        this.attrs.timeout = timeout;
+        this.attrs.connectTimeout = timeout;
+        return this;
+    }
+
+    public LibratoClientBuilder setPoster(IPoster poster) {
+        this.attrs.poster = poster;
         return this;
     }
 }

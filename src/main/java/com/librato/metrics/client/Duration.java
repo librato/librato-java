@@ -10,4 +10,8 @@ public class Duration {
         this.duration = duration;
         this.timeUnit = timeUnit;
     }
+
+    public long to(TimeUnit timeUnit) {
+        return timeUnit.convert(this.duration, this.timeUnit);
+    }
 }

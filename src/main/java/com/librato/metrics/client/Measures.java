@@ -18,4 +18,9 @@ public class Measures {
         this.epoch = epoch;
     }
 
+    public Measures addMeasure(IMeasure measure) {
+        this.measures.add(measure);
+        return this;
+    }
+
 }

@@ -15,4 +15,11 @@ public class Maps {
             map.put(key, objects);
         }
     }
+
+    public static void putIfNotEmpty(Map<String, Object> map, String key, Map objects) {
+        if (objects != null && !objects.isEmpty()) {
+            map.put(key, objects);
+        }
+    }
+
 }

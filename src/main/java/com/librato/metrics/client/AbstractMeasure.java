@@ -21,7 +21,7 @@ abstract class AbstractMeasure implements IMeasure {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", Sanitizer.LAST_PASS.apply(name));
         Maps.putIfNotNull(map, "period", period);
-        Maps.putIfNotNull(map, "attributes", metricAttributes);
+        Maps.putIfNotEmpty(map, "attributes", metricAttributes);
         return map;
     }
 }

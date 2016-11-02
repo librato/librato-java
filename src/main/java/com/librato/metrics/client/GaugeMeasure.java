@@ -33,6 +33,30 @@ public class GaugeMeasure extends AbstractMeasure {
         this.sumSquares = sumSquares;
     }
 
+    @Override
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = super.toMap();
+        Maps.putIfNotNull(map, "measure_time", epoch);
+        Maps.putIfNotNull(map, "source", source);
+        Maps.putIfNotNull(map, "value", value);
+        Maps.putIfNotNull(map, "sum", sum);
+        Maps.putIfNotNull(map, "count", count);
+        Maps.putIfNotNull(map, "min", min);
+        Maps.putIfNotNull(map, "max", max);
+        Maps.putIfNotNull(map, "sum_squares", sumSquares);
+        return map;
+    }
+
+    @Override
+    public boolean isTagged() {
+        return false;
+    }
+
+    @Override
+    public boolean isGauge() {
+        return true;
+    }
+
     public GaugeMeasure setTime(long epochSeconds) {
         this.epoch = epochSeconds;
         return this;

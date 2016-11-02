@@ -1,6 +1,9 @@
 package com.librato.metrics.client;
 
+import com.librato.metrics.Sanitizer;
+
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 abstract class AbstractMeasure implements IMeasure {
@@ -11,6 +14,15 @@ abstract class AbstractMeasure implements IMeasure {
 
     public AbstractMeasure(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("name", Sanitizer.LAST_PASS.apply(name));
+        Maps.putIfNotNull(map, "period", period);
+        Maps.putIfNotNull(map, "attributes", metricAttributes);
+        return map;
     }
 }
 

@@ -7,20 +7,31 @@ import java.util.List;
  * Represents a bundle of measures
  */
 public class Measures {
-    private final long epoch;
+    private final Long epoch;
     private final List<IMeasure> measures = new LinkedList<IMeasure>();
 
     public Measures() {
-        this.epoch = System.currentTimeMillis() / 1000;
+        this(null);
     }
 
-    public Measures(long epoch) {
+    public Measures(Long epoch) {
         this.epoch = epoch;
     }
 
-    public Measures addMeasure(IMeasure measure) {
+    public Measures add(GaugeMeasure measure) {
         this.measures.add(measure);
         return this;
     }
 
+    public Long getEpoch() {
+        return epoch;
+    }
+
+    public List<IMeasure> getMeasures() {
+        return measures;
+    }
+
+    public boolean isEmpty() {
+        return measures.isEmpty();
+    }
 }

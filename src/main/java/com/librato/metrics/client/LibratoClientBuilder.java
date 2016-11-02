@@ -1,7 +1,4 @@
-package com.librato.metrics;
-
-import com.librato.metrics.client.Duration;
-import com.librato.metrics.client.IPoster;
+package com.librato.metrics.client;
 
 import java.net.URI;
 
@@ -13,13 +10,13 @@ public class LibratoClientBuilder {
         attrs.token = token;
     }
 
-    public LibratoClientBuilder setMetricURI(URI uri) {
-        this.attrs.metricURI = uri;
+    public LibratoClientBuilder setMetricURI(String uri) {
+        this.attrs.metricURI = URI.create(uri);
         return this;
     }
 
-    public LibratoClientBuilder setTaggedURI(URI uri) {
-        this.attrs.taggedURI = uri;
+    public LibratoClientBuilder setTaggedURI(String uri) {
+        this.attrs.taggedURI = URI.create(uri);
         return this;
     }
 
@@ -28,8 +25,13 @@ public class LibratoClientBuilder {
         return this;
     }
 
-    public LibratoClientBuilder setTimeout(Duration timeout) {
+    public LibratoClientBuilder setConnectTimeout(Duration timeout) {
         this.attrs.connectTimeout = timeout;
+        return this;
+    }
+
+    public LibratoClientBuilder setReadTimeout(Duration timeout) {
+        this.attrs.readTimeout = timeout;
         return this;
     }
 

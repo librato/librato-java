@@ -39,4 +39,8 @@ public class LibratoClientBuilder {
         this.attrs.poster = poster;
         return this;
     }
+
+    public LibratoClient build() {
+        return new LibratoClient(attrs);
+    }
 }

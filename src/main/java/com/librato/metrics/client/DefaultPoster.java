@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.URI;
+import java.net.URL;
 import java.util.Map;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -14,7 +14,7 @@ public class DefaultPoster implements IPoster {
     private static final Logger log = LoggerFactory.getLogger(DefaultPoster.class);
 
     @Override
-    public HttpResponse post(URI uri, Duration connectTimeout, Duration readTimeout, Map<String, String> headers, byte[] payload) {
+    public HttpResponse post(String uri, Duration connectTimeout, Duration readTimeout, Map<String, String> headers, byte[] payload) {
         try {
             HttpURLConnection connection = open(uri);
             final int responseCode;
@@ -61,9 +61,9 @@ public class DefaultPoster implements IPoster {
 
     }
 
-    HttpURLConnection open(URI url) throws IOException {
+    HttpURLConnection open(String url) throws IOException {
         try {
-            return (HttpURLConnection) url.toURL().openConnection();
+            return (HttpURLConnection) new URL(url).openConnection();
         } catch (ClassCastException ignore) {
             throw new RuntimeException("URL " + url + " must use either http or https");
         }

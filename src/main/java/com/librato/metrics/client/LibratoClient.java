@@ -25,7 +25,7 @@ public class LibratoClient {
         return new LibratoClientBuilder(email, token);
     }
 
-    private LibratoClient(LibratoClientAttributes attrs) {
+    LibratoClient(LibratoClientAttributes attrs) {
         this.sdURI = attrs.metricURI;
         this.mdURI = attrs.taggedURI;
         this.batchSize = attrs.batchSize;
@@ -65,7 +65,7 @@ public class LibratoClient {
         Long epoch = measures.getEpoch();
         Future<List<PostResult>> sdFuture = null;
         if (!sdMeasures.isEmpty()) {
-            sdFuture = postMeasures(sdURI, epoch, sdMeasures, new IBuildsPayload() {
+            sdFuture = postMeasures(sdURI.toString() + "/v1/metrics", epoch, sdMeasures, new IBuildsPayload() {
                 @Override
                 public byte[] build(Long epoch, List<IMeasure> batch) {
                     return buildSDPayload(epoch, batch);
@@ -74,7 +74,7 @@ public class LibratoClient {
         }
         Future<List<PostResult>> mdFuture = null;
         if (!mdMeasures.isEmpty()) {
-            mdFuture = postMeasures(mdURI, epoch, mdMeasures, new IBuildsPayload() {
+            mdFuture = postMeasures(mdURI.toString() + "/v1/measurements", epoch, mdMeasures, new IBuildsPayload() {
                 @Override
                 public byte[] build(Long epoch, List<IMeasure> batch) {
                     return buildMDPayload(epoch, batch);
@@ -90,7 +90,7 @@ public class LibratoClient {
         return result;
     }
 
-    private Future<List<PostResult>> postMeasures(final URI uri,
+    private Future<List<PostResult>> postMeasures(final String uri,
                                                   final Long epoch,
                                                   final List<IMeasure> measures,
                                                   final IBuildsPayload payloadBuilder) {

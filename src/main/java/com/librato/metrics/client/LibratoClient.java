@@ -45,7 +45,7 @@ public class LibratoClient {
         this.executor = new ThreadPoolExecutor(0, attrs.maxInflightRequests, 10, TimeUnit.SECONDS, queue, threadFactory, new CallerRunsPolicy());
         measurementPostHeaders.put("Content-Type", "application/json");
         measurementPostHeaders.put("Authorization", Authorization.buildAuthHeader(attrs.email, attrs.token));
-        measurementPostHeaders.put("User-Agent", LIB_VERSION);
+        measurementPostHeaders.put("User-Agent", String.format("%s librato-java/%s", attrs.agentIdentifier, LIB_VERSION));
     }
 
     public PostMeasuresResult postMeasures(Measures measures) {

@@ -12,5 +12,6 @@ public class LibratoClientAttributes {
     public String token;
     public IPoster poster = new DefaultPoster();
     public int maxInflightRequests = 10;
+    public String agentIdentifier = "unknown";
 
 }

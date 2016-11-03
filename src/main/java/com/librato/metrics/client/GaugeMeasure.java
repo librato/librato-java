@@ -9,14 +9,14 @@ public class GaugeMeasure extends AbstractMeasure {
     private Double min;
     private Double max;
     private Double sumSquares;
-    private Integer count;
+    private Long count;
 
     public GaugeMeasure(String name, double value) {
         super(name);
         this.value = value;
     }
 
-    public GaugeMeasure(String name, double sum, int count, double min, double max) {
+    public GaugeMeasure(String name, double sum, long count, double min, double max) {
         super(name);
         this.sum = sum;
         this.count = count;
@@ -24,7 +24,7 @@ public class GaugeMeasure extends AbstractMeasure {
         this.max = max;
     }
 
-    public GaugeMeasure(String name, double sum, int count, double min, double max, double sumSquares) {
+    public GaugeMeasure(String name, double sum, long count, double min, double max, double sumSquares) {
         super(name);
         this.sum = sum;
         this.count = count;

@@ -35,6 +35,11 @@ public class LibratoClientBuilder {
         return this;
     }
 
+    public LibratoClientBuilder setAgentIdentifier(String identifier) {
+        this.attrs.agentIdentifier = identifier;
+        return this;
+    }
+
     public LibratoClient build() {
         return new LibratoClient(attrs);
     }

@@ -10,7 +10,7 @@ public class TaggedMeasure extends AbstractMeasure {
     private List<Tag> tags = new LinkedList<Tag>();
 
     public TaggedMeasure(GaugeMeasure measure) {
-        super(measure.getName());
+        super(measure);
         if (measure.getValue() != null) {
             this.sum = measure.getValue();
             this.count = 1;

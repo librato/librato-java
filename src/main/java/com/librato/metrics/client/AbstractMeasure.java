@@ -12,6 +12,13 @@ abstract class AbstractMeasure implements IMeasure {
     Integer period;
     Long epoch;
 
+    public AbstractMeasure(AbstractMeasure measure) {
+        this.name = measure.name;
+        this.metricAttributes = measure.metricAttributes;
+        this.period = measure.period;
+        this.epoch = measure.epoch;
+    }
+
     public AbstractMeasure(String name) {
         this.name = name;
     }

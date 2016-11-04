@@ -34,7 +34,6 @@ public class TaggedMeasure extends AbstractMeasure {
         Map<String, String> tagMap = new HashMap<String, String>();
         map.put("tags", tagMap);
         for (Tag tag : tags) {
-            // todo: sanitize
             tagMap.put(tag.name, tag.value);
         }
         return map;

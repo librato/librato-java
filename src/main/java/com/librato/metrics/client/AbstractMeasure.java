@@ -24,5 +24,9 @@ abstract class AbstractMeasure implements IMeasure {
         Maps.putIfNotEmpty(map, "attributes", metricAttributes);
         return map;
     }
+
+    public String getName() {
+        return name;
+    }
 }
 

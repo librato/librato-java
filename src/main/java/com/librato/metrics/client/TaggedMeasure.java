@@ -4,10 +4,25 @@ import java.util.*;
 
 public class TaggedMeasure extends AbstractMeasure {
     private double sum;
-    private int count;
+    private long count;
     private double min;
     private double max;
     private List<Tag> tags = new LinkedList<Tag>();
+
+    public TaggedMeasure(GaugeMeasure measure) {
+        super(measure.getName());
+        if (measure.getValue() != null) {
+            this.sum = measure.getValue();
+            this.count = 1;
+            this.min = sum;
+            this.max = sum;
+        } else {
+            this.sum = measure.getSum();
+            this.count = measure.getCount();
+            this.min = measure.getMin();
+            this.max = measure.getMax();
+        }
+    }
 
     public TaggedMeasure(String name, double value, Tag tag, Tag...tags) {
         this(name, value, 1, value, value, tag, tags);
@@ -21,6 +36,10 @@ public class TaggedMeasure extends AbstractMeasure {
         this.max = max;
         this.tags.add(tag);
         Collections.addAll(this.tags, tags);
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
     }
 
     @Override

@@ -78,4 +78,32 @@ public class GaugeMeasure extends AbstractMeasure {
         this.period = period;
         return this;
     }
+
+    public String getSource() {
+        return source;
+    }
+
+    public Double getValue() {
+        return value;
+    }
+
+    public Double getSum() {
+        return sum;
+    }
+
+    public Double getMin() {
+        return min;
+    }
+
+    public Double getMax() {
+        return max;
+    }
+
+    public Double getSumSquares() {
+        return sumSquares;
+    }
+
+    public Long getCount() {
+        return count;
+    }
 }

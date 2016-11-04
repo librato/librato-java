@@ -27,7 +27,7 @@ public class LibratoClient {
     }
 
     LibratoClient(LibratoClientAttributes attrs) {
-        this.uri = attrs.uri;
+        this.uri = URIs.removePath(attrs.uri);
         this.batchSize = attrs.batchSize;
         this.connectTimeout = attrs.connectTimeout;
         this.readTimeout = attrs.readTimeout;

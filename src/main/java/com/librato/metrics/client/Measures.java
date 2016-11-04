@@ -70,6 +70,10 @@ public class Measures {
         return source;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
     interface MeasurePredicate {
         boolean accept(IMeasure measure);
     }

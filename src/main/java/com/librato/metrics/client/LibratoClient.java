@@ -126,6 +126,9 @@ public class LibratoClient {
     private byte[] buildMDPayload(Measures measures) {
         final Map<String, Object> payload = new HashMap<String, Object>();
         Maps.putIfNotNull(payload, "time", measures.getEpoch());
+        if (!measures.getTags().isEmpty()) {
+            payload.put("tags", Tags.toMap(measures.getTags()));
+        }
         List<Map<String, Object>> gauges = new LinkedList<Map<String, Object>>();
         for (IMeasure measure : measures.getMeasures()) {
             Map<String, Object> measureMap = measure.toMap();

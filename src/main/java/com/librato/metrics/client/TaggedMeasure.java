@@ -31,10 +31,8 @@ public class TaggedMeasure extends AbstractMeasure {
         map.put("count", count);
         map.put("min", min);
         map.put("max", max);
-        Map<String, String> tagMap = new HashMap<String, String>();
-        map.put("tags", tagMap);
-        for (Tag tag : tags) {
-            tagMap.put(tag.name, tag.value);
+        if (!tags.isEmpty()) {
+            map.put("tags", Tags.toMap(tags));
         }
         return map;
     }

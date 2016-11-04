@@ -1,5 +1,6 @@
 package com.librato.metrics.client;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,29 +11,39 @@ public class Measures {
     private final String source;
     private final Long epoch;
     private final List<IMeasure> measures = new LinkedList<IMeasure>();
+    private final List<Tag> tags = new LinkedList<Tag>();
 
     public Measures() {
         this(null);
     }
 
     public Measures(Long epoch) {
-        this(null, epoch);
+        this(null, Collections.<Tag>emptyList(), epoch);
     }
 
     public Measures(String source, Long epoch) {
-        this.source = source;
-        this.epoch = epoch;
+        this(source, Collections.<Tag>emptyList(), epoch);
     }
 
-    public Measures(String source, Long epoch, List<IMeasure> batch) {
-        this(source, epoch);
+    public Measures(List<Tag> tags, Long epoch) {
+        this(null, tags, epoch);
+    }
+
+    public Measures(String source, List<Tag> tags, Long epoch) {
+        this(source, tags, epoch, Collections.<IMeasure>emptyList());
+    }
+
+    public Measures(String source, List<Tag> tags, Long epoch, List<IMeasure> batch) {
+        this.source = source;
+        this.epoch = epoch;
         this.measures.addAll(batch);
+        this.tags.addAll(tags);
     }
 
     public List<Measures> partition(int size) {
         List<Measures> result = new LinkedList<Measures>();
         for (List<IMeasure> batch : Lists.partition(this.measures, size)) {
-            result.add(new Measures(source, epoch, batch));
+            result.add(new Measures(source, tags, epoch, batch));
         }
         return result;
     }

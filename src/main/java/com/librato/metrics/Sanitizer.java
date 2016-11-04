@@ -26,6 +26,9 @@ public interface Sanitizer {
         private final int lengthLimit = 256;
 
         public String apply(String name) {
+            if (name == null) {
+                return null;
+            }
             final String sanitized = disallowedCharacters.matcher(name).replaceAll("");
             if (sanitized.length() > lengthLimit) {
                 return sanitized.substring(sanitized.length() - lengthLimit, sanitized.length());

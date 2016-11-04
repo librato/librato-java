@@ -1,5 +1,7 @@
 package com.librato.metrics.client;
 
+import com.librato.metrics.Sanitizer;
+
 import java.util.Map;
 
 public class GaugeMeasure extends AbstractMeasure {
@@ -37,7 +39,7 @@ public class GaugeMeasure extends AbstractMeasure {
     public Map<String, Object> toMap() {
         Map<String, Object> map = super.toMap();
         Maps.putIfNotNull(map, "measure_time", epoch);
-        Maps.putIfNotNull(map, "source", source);
+        Maps.putIfNotNull(map, "source", Sanitizer.LAST_PASS.apply(source));
         Maps.putIfNotNull(map, "value", value);
         Maps.putIfNotNull(map, "sum", sum);
         Maps.putIfNotNull(map, "count", count);

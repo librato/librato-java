@@ -53,31 +53,23 @@ public class LibratoClient {
         if (measures.isEmpty()) {
             return result;
         }
-        List<IMeasure> sdMeasures = new LinkedList<IMeasure>();
-        List<IMeasure> mdMeasures = new LinkedList<IMeasure>();
-        for (IMeasure measure : measures.getMeasures()) {
-            if (measure.isTagged()) {
-                mdMeasures.add(measure);
-            } else {
-                sdMeasures.add(measure);
-            }
-        }
-        Long epoch = measures.getEpoch();
         Future<List<PostResult>> sdFuture = null;
+        final Measures sdMeasures = measures.toSD();
+        Measures mdMeasures = measures.toMD();
         if (!sdMeasures.isEmpty()) {
-            sdFuture = postMeasures("/v1/metrics", epoch, sdMeasures, sdResponseConverter, new IBuildsPayload() {
+            sdFuture = postMeasures("/v1/metrics", sdMeasures, sdResponseConverter, new IBuildsPayload() {
                 @Override
-                public byte[] build(Long epoch, List<IMeasure> batch) {
-                    return buildSDPayload(epoch, batch);
+                public byte[] build(Measures measures) {
+                    return buildSDPayload(measures);
                 }
             });
         }
         Future<List<PostResult>> mdFuture = null;
         if (!mdMeasures.isEmpty()) {
-            mdFuture = postMeasures("/v1/measurements", epoch, mdMeasures, mdResponseConverter, new IBuildsPayload() {
+            mdFuture = postMeasures("/v1/measurements", mdMeasures, mdResponseConverter, new IBuildsPayload() {
                 @Override
-                public byte[] build(Long epoch, List<IMeasure> batch) {
-                    return buildMDPayload(epoch, batch);
+                public byte[] build(Measures measures) {
+                    return buildMDPayload(measures);
                 }
             });
         }
@@ -91,16 +83,15 @@ public class LibratoClient {
     }
 
     private Future<List<PostResult>> postMeasures(final String uri,
-                                                  final Long epoch,
-                                                  final List<IMeasure> measures,
+                                                  final Measures measures,
                                                   final IResponseConverter responseConverter,
                                                   final IBuildsPayload payloadBuilder) {
         return executor.submit(new Callable<List<PostResult>>() {
             @Override
             public List<PostResult> call() throws Exception {
                 List<PostResult> results = new LinkedList<PostResult>();
-                for (List<IMeasure> batch : Lists.partition(measures, LibratoClient.this.batchSize)) {
-                    byte[] payload = payloadBuilder.build(epoch, batch);
+                for (Measures batch : measures.partition(LibratoClient.this.batchSize)) {
+                    byte[] payload = payloadBuilder.build(batch);
                     try {
                         HttpResponse response = poster.post(fullUrl(uri), connectTimeout, readTimeout, measurementPostHeaders, payload);
                         results.add(responseConverter.convert(payload, response));
@@ -113,12 +104,13 @@ public class LibratoClient {
         });
     }
 
-    private byte[] buildSDPayload(Long epoch, List<IMeasure> measures) {
+    private byte[] buildSDPayload(Measures measures) {
         final Map<String, Object> payload = new HashMap<String, Object>();
-        Maps.putIfNotNull(payload, "measure_time", epoch);
+        Maps.putIfNotNull(payload, "measure_time", measures.getEpoch());
+        Maps.putIfNotNull(payload, "source", Sanitizer.LAST_PASS.apply(measures.getSource()));
         List<Map<String, Object>> gauges = new LinkedList<Map<String, Object>>();
         List<Map<String, Object>> counters = new LinkedList<Map<String, Object>>();
-        for (IMeasure measure : measures) {
+        for (IMeasure measure : measures.getMeasures()) {
             Map<String, Object> measureMap = measure.toMap();
             if (measure.isGauge()) {
                 gauges.add(measureMap);
@@ -131,11 +123,11 @@ public class LibratoClient {
         return Json.serialize(payload);
     }
 
-    private byte[] buildMDPayload(Long epoch, List<IMeasure> measures) {
+    private byte[] buildMDPayload(Measures measures) {
         final Map<String, Object> payload = new HashMap<String, Object>();
-        Maps.putIfNotNull(payload, "time", epoch);
+        Maps.putIfNotNull(payload, "time", measures.getEpoch());
         List<Map<String, Object>> gauges = new LinkedList<Map<String, Object>>();
-        for (IMeasure measure : measures) {
+        for (IMeasure measure : measures.getMeasures()) {
             Map<String, Object> measureMap = measure.toMap();
             gauges.add(measureMap);
         }

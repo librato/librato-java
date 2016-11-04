@@ -77,4 +77,17 @@ public class TaggedMeasure extends AbstractMeasure {
     }
 
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("TaggedMeasure{");
+        sb.append("name=").append(name);
+        sb.append(", epoch=").append(epoch);
+        sb.append(", tags=").append(tags);
+        sb.append(", sum=").append(sum);
+        sb.append(", count=").append(count);
+        sb.append(", min=").append(min);
+        sb.append(", max=").append(max);
+        sb.append('}');
+        return sb.toString();
+    }
 }

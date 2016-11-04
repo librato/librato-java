@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * Represents a client
  */
-interface IMeasure {
+public interface IMeasure {
 
     boolean isTagged();
 

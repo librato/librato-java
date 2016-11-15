@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
  * The main class that should be used to access the Librato API
  */
 public class LibratoClient {
-    private static final String LIB_VERSION = Versions.getVersion("META-INF/maven/com.librato.metrics/librato-java/pom.properties", LibratoBatch.class);
+    private static final String LIB_VERSION = Versions.getVersion("META-INF/maven/com.librato.metrics/librato-java/pom.properties", LibratoClient.class);
     private final URI uri;
     private final int batchSize;
     private final Duration connectTimeout;

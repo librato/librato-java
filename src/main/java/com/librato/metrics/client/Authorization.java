@@ -1,4 +1,4 @@
-package com.librato.metrics;
+package com.librato.metrics.client;
 
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.Charset;

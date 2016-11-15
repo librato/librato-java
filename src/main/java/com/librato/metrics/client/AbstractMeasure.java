@@ -1,7 +1,5 @@
 package com.librato.metrics.client;
 
-import com.librato.metrics.Sanitizer;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

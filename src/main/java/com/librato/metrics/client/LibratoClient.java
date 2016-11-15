@@ -1,7 +1,5 @@
 package com.librato.metrics.client;
 
-import com.librato.metrics.*;
-
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.*;

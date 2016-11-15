@@ -1,6 +1,5 @@
 package com.librato.metrics.client;
 
-import com.librato.metrics.Authorization;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;

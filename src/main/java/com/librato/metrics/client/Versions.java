@@ -1,4 +1,4 @@
-package com.librato.metrics;
+package com.librato.metrics.client;
 
 
 import org.slf4j.Logger;

@@ -22,7 +22,7 @@ public class Post {
         this(uri, connectTimeout, timeout, headers, payload.getBytes());
     }
 
-    public Post(String uri, Duration connectTimeout, Duration timeout, Map<String, String> headers, SDPayload foo) {
+    public Post(String uri, Duration connectTimeout, Duration timeout, Map<String, String> headers, Payload foo) {
         this(uri, connectTimeout, timeout, headers, foo.serialize());
     }
 

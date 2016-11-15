@@ -118,8 +118,8 @@ public class LibratoClient {
                 counters.add(measureMap);
             }
         }
-        Maps.putIfNotEmpty(payload, "gauges", gauges);
         Maps.putIfNotEmpty(payload, "counters", counters);
+        Maps.putIfNotEmpty(payload, "gauges", gauges);
         return Json.serialize(payload);
     }
 

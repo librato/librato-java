@@ -63,7 +63,8 @@ public class CounterMeasure extends AbstractMeasure {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
-        sb.append("source='").append(source).append('\'');
+        sb.append("name='").append(name).append('\'');
+        sb.append(", source='").append(source).append('\'');
         sb.append(", value=").append(value);
         sb.append('}');
         return sb.toString();

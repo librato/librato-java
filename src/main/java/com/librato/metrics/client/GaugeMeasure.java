@@ -144,7 +144,8 @@ public class GaugeMeasure extends AbstractMeasure {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
-        sb.append("source='").append(source).append('\'');
+        sb.append("name='").append(name).append('\'');
+        sb.append(", source='").append(source).append('\'');
         sb.append(", value=").append(value);
         sb.append(", sum=").append(sum);
         sb.append(", min=").append(min);

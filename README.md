@@ -31,7 +31,7 @@ API:
 
     PostMeasuresResult result = client.postMeasures(new Measures()
         .add(new GaugeMeasure(name, value))
-        .add(new GaugeMeasure(name, value).setSource("uid:43")
+        .add(new GaugeMeasure(name, value).setSource("uid:43"))
         .add(new GaugeMeasure(name, sum, count, min, max))
         .add(new GaugeMeasure(name, sum, count, min, max, sumSquares))
         .add(new CounterMeasure(name, value))

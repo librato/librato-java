@@ -6,5 +6,4 @@ import java.util.List;
 public class PostMeasuresResult {
     public List<PostResult> results = new LinkedList<PostResult>();
 
-
 }

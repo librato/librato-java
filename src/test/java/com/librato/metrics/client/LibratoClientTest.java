@@ -17,20 +17,21 @@ public class LibratoClientTest {
     Duration connectTimeout = new Duration(5, TimeUnit.SECONDS);
     Duration timeout = new Duration(10, TimeUnit.SECONDS);
     Map<String, String> headers = new HashMap<String, String>();
+    FakePoster poster = new FakePoster();
+    LibratoClient client = LibratoClient.builder("foo@example.com", "token")
+            .setPoster(poster)
+            .setAgentIdentifier("test-lib")
+            .build();
 
     @Before
     public void setUp() throws Exception {
         headers.put("Content-Type", "application/json");
         headers.put("Authorization", Authorization.buildAuthHeader("foo@example.com", "token"));
-        headers.put("User-Agent", "unknown librato-java/unknown");
+        headers.put("User-Agent", "test-lib librato-java/0.0.10");
     }
 
     @Test
     public void testPostsGauge() throws Exception {
-        FakePoster poster = new FakePoster();
-        LibratoClient client = LibratoClient.builder("foo@example.com", "token")
-                .setPoster(poster)
-                .build();
         client.postMeasures(new Measures()
                 .add(new GaugeMeasure("foo", 42)));
         assertThat(poster.posts).isEqualTo(asList(

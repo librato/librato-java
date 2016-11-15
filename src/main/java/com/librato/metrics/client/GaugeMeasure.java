@@ -104,4 +104,54 @@ public class GaugeMeasure extends AbstractMeasure {
     public Long getCount() {
         return count;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GaugeMeasure that = (GaugeMeasure) o;
+
+        if (source != null ? !source.equals(that.source) : that.source != null)
+            return false;
+        if (value != null ? !value.equals(that.value) : that.value != null)
+            return false;
+        if (sum != null ? !sum.equals(that.sum) : that.sum != null)
+            return false;
+        if (min != null ? !min.equals(that.min) : that.min != null)
+            return false;
+        if (max != null ? !max.equals(that.max) : that.max != null)
+            return false;
+        if (sumSquares != null ? !sumSquares.equals(that.sumSquares) : that.sumSquares != null)
+            return false;
+        return count != null ? count.equals(that.count) : that.count == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = source != null ? source.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (sum != null ? sum.hashCode() : 0);
+        result = 31 * result + (min != null ? min.hashCode() : 0);
+        result = 31 * result + (max != null ? max.hashCode() : 0);
+        result = 31 * result + (sumSquares != null ? sumSquares.hashCode() : 0);
+        result = 31 * result + (count != null ? count.hashCode() : 0);
+        return result;
+    }
+
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("source='").append(source).append('\'');
+        sb.append(", value=").append(value);
+        sb.append(", sum=").append(sum);
+        sb.append(", min=").append(min);
+        sb.append(", max=").append(max);
+        sb.append(", sumSquares=").append(sumSquares);
+        sb.append(", count=").append(count);
+        sb.append('}');
+        return sb.toString();
+    }
 }

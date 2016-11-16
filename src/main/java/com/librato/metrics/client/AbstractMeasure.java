@@ -33,5 +33,31 @@ abstract class AbstractMeasure implements IMeasure {
     public String getName() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractMeasure that = (AbstractMeasure) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null)
+            return false;
+        if (metricAttributes != null ? !metricAttributes.equals(that.metricAttributes) : that.metricAttributes != null)
+            return false;
+        if (period != null ? !period.equals(that.period) : that.period != null)
+            return false;
+        return epoch != null ? epoch.equals(that.epoch) : that.epoch == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (metricAttributes != null ? metricAttributes.hashCode() : 0);
+        result = 31 * result + (period != null ? period.hashCode() : 0);
+        result = 31 * result + (epoch != null ? epoch.hashCode() : 0);
+        return result;
+    }
 }
 

@@ -76,10 +76,9 @@ public class TaggedMeasure extends AbstractMeasure {
         return this;
     }
 
-
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("TaggedMeasure{");
+        final StringBuilder sb = new StringBuilder("{");
         sb.append("name=").append(name);
         sb.append(", epoch=").append(epoch);
         sb.append(", tags=").append(tags);
@@ -89,5 +88,36 @@ public class TaggedMeasure extends AbstractMeasure {
         sb.append(", max=").append(max);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        TaggedMeasure that = (TaggedMeasure) o;
+
+        if (Double.compare(that.sum, sum) != 0) return false;
+        if (count != that.count) return false;
+        if (Double.compare(that.min, min) != 0) return false;
+        if (Double.compare(that.max, max) != 0) return false;
+        return tags != null ? tags.equals(that.tags) : that.tags == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(sum);
+        result = (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (int) (count ^ (count >>> 32));
+        temp = Double.doubleToLongBits(min);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(max);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        return result;
     }
 }

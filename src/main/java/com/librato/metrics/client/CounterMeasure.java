@@ -40,4 +40,34 @@ public class CounterMeasure extends AbstractMeasure {
         return this;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        CounterMeasure that = (CounterMeasure) o;
+
+        if (value != that.value) return false;
+        return source != null ? source.equals(that.source) : that.source == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = source != null ? source.hashCode() : 0;
+        result = 31 * result + (int) (value ^ (value >>> 32));
+        return result;
+    }
+
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", source='").append(source).append('\'');
+        sb.append(", value=").append(value);
+        sb.append('}');
+        return sb.toString();
+    }
 }

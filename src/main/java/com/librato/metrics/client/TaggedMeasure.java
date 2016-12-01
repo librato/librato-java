@@ -28,7 +28,7 @@ public class TaggedMeasure extends AbstractMeasure {
         this(name, value, 1, value, value, tag, tags);
     }
 
-    public TaggedMeasure(String name, double sum, int count, double min, double max, Tag tag, Tag...tags) {
+    public TaggedMeasure(String name, double sum, long count, double min, double max, Tag tag, Tag...tags) {
         super(name);
         this.sum = sum;
         this.count = count;

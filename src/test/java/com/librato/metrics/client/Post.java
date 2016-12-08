@@ -41,8 +41,10 @@ public class Post {
             return false;
         if (headers != null ? !headers.equals(post.headers) : post.headers != null)
             return false;
-        return Arrays.equals(payload, post.payload);
 
+        Map payloadMap = Json.deserialize(payload, Map.class);
+        Map otherMap = Json.deserialize(post.payload, Map.class);
+        return payloadMap.equals(otherMap);
     }
 
     @Override

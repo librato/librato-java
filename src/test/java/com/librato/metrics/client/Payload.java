@@ -14,11 +14,32 @@ import java.util.Map;
 class Payload {
     static final ObjectMapper mapper = new ObjectMapper();
     @JsonProperty
+    String source;
+    @JsonProperty
+    Integer period;
+    @JsonProperty("measure_time")
+    Long measureTime;
+    @JsonProperty
     List<Map<String, Object>> counters = new LinkedList<Map<String, Object>>();
     @JsonProperty
     List<Map<String, Object>> gauges = new LinkedList<Map<String, Object>>();
     @JsonProperty("measurements")
     List<Map<String, Object>> tagged = new LinkedList<Map<String, Object>>();
+
+    public Payload setSource(String source) {
+        this.source = source;
+        return this;
+    }
+
+    public Payload setPeriod(Integer period) {
+        this.period = period;
+        return this;
+    }
+
+    public Payload setMeasureTime(long measureTime) {
+        this.measureTime = measureTime;
+        return this;
+    }
 
     public Payload addGauge(String name, double sum, long count, double min, double max, double sumSquares) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -35,6 +56,14 @@ class Payload {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", name);
         map.put("value", value);
+        return addGauge(map);
+    }
+
+    public Payload addGauge(String name, double value, int period) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("name", name);
+        map.put("value", value);
+        map.put("period", period);
         return addGauge(map);
     }
 

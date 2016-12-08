@@ -106,6 +106,7 @@ public class LibratoClient {
         final Map<String, Object> payload = new HashMap<String, Object>();
         Maps.putIfNotNull(payload, "measure_time", measures.getEpoch());
         Maps.putIfNotNull(payload, "source", Sanitizer.LAST_PASS.apply(measures.getSource()));
+        Maps.putIfNotNull(payload, "period", measures.getPeriod());
         List<Map<String, Object>> gauges = new LinkedList<Map<String, Object>>();
         List<Map<String, Object>> counters = new LinkedList<Map<String, Object>>();
         for (IMeasure measure : measures.getMeasures()) {
@@ -124,6 +125,7 @@ public class LibratoClient {
     private byte[] buildMDPayload(Measures measures) {
         final Map<String, Object> payload = new HashMap<String, Object>();
         Maps.putIfNotNull(payload, "time", measures.getEpoch());
+        Maps.putIfNotNull(payload, "period", measures.getPeriod());
         if (!measures.getTags().isEmpty()) {
             payload.put("tags", Tags.toMap(measures.getTags()));
         }

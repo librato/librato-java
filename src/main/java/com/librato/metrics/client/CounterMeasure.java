@@ -35,6 +35,11 @@ public class CounterMeasure extends AbstractMeasure {
         return this;
     }
 
+    public CounterMeasure setPeriod(int period) {
+        this.period = period;
+        return this;
+    }
+
     public CounterMeasure setMetricAttributes(Map<String, Object> attributes) {
         this.metricAttributes = attributes;
         return this;

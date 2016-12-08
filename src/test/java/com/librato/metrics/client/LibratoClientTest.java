@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,19 @@ public class LibratoClientTest {
         headers.put("Content-Type", "application/json");
         headers.put("Authorization", Authorization.buildAuthHeader("foo@example.com", "token"));
         headers.put("User-Agent", "test-lib librato-java/0.0.10");
+    }
+
+    @Test
+    public void testSendsPeriod() throws Exception {
+        long now = System.currentTimeMillis() / 1000;
+        client.postMeasures(new Measures("foo", Collections.<Tag>emptyList(), now, 60)
+                .add(new GaugeMeasure("foo", 42).setPeriod(30)));
+        assertThat(poster.posts).isEqualTo(asList(
+                new Post(metricsUrl, connectTimeout, timeout, headers, new Payload()
+                        .setMeasureTime(now)
+                        .setSource("foo")
+                        .setPeriod(60)
+                        .addGauge("foo", 42, 30))));
     }
 
     @Test

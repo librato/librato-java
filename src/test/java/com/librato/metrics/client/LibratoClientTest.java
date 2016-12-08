@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +35,7 @@ public class LibratoClientTest {
     @Test
     public void testSendsPeriod() throws Exception {
         long now = System.currentTimeMillis() / 1000;
-        client.postMeasures(new Measures("foo", now, 60)
+        client.postMeasures(new Measures("foo", Collections.<Tag>emptyList(), now, 60)
                 .add(new GaugeMeasure("foo", 42).setPeriod(30)));
         assertThat(poster.posts).isEqualTo(asList(
                 new Post(metricsUrl, connectTimeout, timeout, headers, new Payload()

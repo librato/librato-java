@@ -10,8 +10,8 @@ public class Measures {
     private final String source;
     private final Long epoch;
     private final Integer period;
-    private final List<IMeasure> measures = new LinkedList<IMeasure>();
     private final List<Tag> tags = new LinkedList<Tag>();
+    private final List<IMeasure> measures = new LinkedList<IMeasure>();
 
     public Measures() {
         this.source = null;
@@ -19,8 +19,16 @@ public class Measures {
         this.period = null;
     }
 
-    public Measures(String source, Long epoch, Integer period) {
+    public Measures(String source, List<Tag> tags, Long epoch) {
         this.source = source;
+        this.tags.addAll(tags);
+        this.epoch = epoch;
+        this.period = null;
+    }
+
+    public Measures(String source, List<Tag> tags, Long epoch, Integer period) {
+        this.source = source;
+        this.tags.addAll(tags);
         this.epoch = epoch;
         this.period = period;
     }
@@ -72,7 +80,7 @@ public class Measures {
     }
 
     private Measures convert(MeasurePredicate predicate) {
-        Measures result = new Measures(source, epoch, period);
+        Measures result = new Measures(source, tags, epoch, period);
         for (IMeasure measure : this.measures) {
             if (predicate.accept(measure)) {
                 result.measures.add(measure);

@@ -2,6 +2,7 @@ package com.librato.metrics.client;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 public class Post {
     private final String uri;
@@ -41,8 +42,10 @@ public class Post {
             return false;
         if (headers != null ? !headers.equals(post.headers) : post.headers != null)
             return false;
-        return Arrays.equals(payload, post.payload);
 
+        Map payloadMap = Json.deserialize(payload, Map.class);
+        Map otherMap = Json.deserialize(post.payload, Map.class);
+        return payloadMap.equals(otherMap);
     }
 
     @Override

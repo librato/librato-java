@@ -1,6 +1,5 @@
 package com.librato.metrics.client;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,40 +9,34 @@ import java.util.List;
 public class Measures {
     private final String source;
     private final Long epoch;
+    private final Integer period;
     private final List<IMeasure> measures = new LinkedList<IMeasure>();
     private final List<Tag> tags = new LinkedList<Tag>();
 
     public Measures() {
-        this(null);
+        this.source = null;
+        this.epoch = null;
+        this.period = null;
     }
 
-    public Measures(Long epoch) {
-        this(null, Collections.<Tag>emptyList(), epoch);
-    }
-
-    public Measures(String source, Long epoch) {
-        this(source, Collections.<Tag>emptyList(), epoch);
-    }
-
-    public Measures(List<Tag> tags, Long epoch) {
-        this(null, tags, epoch);
-    }
-
-    public Measures(String source, List<Tag> tags, Long epoch) {
-        this(source, tags, epoch, Collections.<IMeasure>emptyList());
-    }
-
-    public Measures(String source, List<Tag> tags, Long epoch, List<IMeasure> batch) {
+    public Measures(String source, Long epoch, Integer period) {
         this.source = source;
         this.epoch = epoch;
+        this.period = period;
+    }
+
+    public Measures(Measures measures, List<IMeasure> batch) {
+        this.source = measures.source;
+        this.epoch = measures.epoch;
+        this.period = measures.period;
         this.measures.addAll(batch);
-        this.tags.addAll(tags);
+        this.tags.addAll(measures.tags);
     }
 
     public List<Measures> partition(int size) {
         List<Measures> result = new LinkedList<Measures>();
         for (List<IMeasure> batch : Lists.partition(this.measures, size)) {
-            result.add(new Measures(source, tags, epoch, batch));
+            result.add(new Measures(this, batch));
         }
         return result;
     }
@@ -79,13 +72,13 @@ public class Measures {
     }
 
     private Measures convert(MeasurePredicate predicate) {
-        Measures measures = new Measures(source, epoch);
+        Measures result = new Measures(source, epoch, period);
         for (IMeasure measure : this.measures) {
             if (predicate.accept(measure)) {
-                measures.measures.add(measure);
+                result.measures.add(measure);
             }
         }
-        return measures;
+        return result;
     }
 
     public Measures add(TaggedMeasure measure) {
@@ -103,6 +96,10 @@ public class Measures {
     private Measures addMeasure(IMeasure measure) {
         this.measures.add(measure);
         return this;
+    }
+
+    public Integer getPeriod() {
+        return period;
     }
 
     public Long getEpoch() {

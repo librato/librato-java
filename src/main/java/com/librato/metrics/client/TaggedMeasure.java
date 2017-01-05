@@ -34,12 +34,37 @@ public class TaggedMeasure extends AbstractMeasure {
         this.count = count;
         this.min = min;
         this.max = max;
-        this.tags.add(tag);
-        Collections.addAll(this.tags, tags);
+        addTag(tag);
+        addTags(tags);
+    }
+
+    public void addTags(Tag... tags) {
+        for (Tag tag : tags) {
+            addTag(tag);
+        }
     }
 
     public void addTag(Tag tag) {
-        this.tags.add(tag);
+        String tagName = sanitizeTagName(tag.name);
+        String tagValue = sanitizeTagValue(tag.value);
+        this.tags.add(new Tag(tagName, tagValue));
+    }
+
+    private String sanitizeTagValue(String value) {
+        value = Sanitizer.LAST_PASS.apply(value);
+        return trimToSize(value, 255);
+    }
+
+    private String sanitizeTagName(String name) {
+        name = Sanitizer.LAST_PASS.apply(name);
+        return trimToSize(name, 64);
+    }
+
+    private String trimToSize(String string, int size) {
+        if (string == null || string.length() <= size) {
+            return string;
+        }
+        return string.substring(0, size);
     }
 
     @Override

@@ -19,6 +19,8 @@ class Payload {
     Integer period;
     @JsonProperty("measure_time")
     Long measureTime;
+    @JsonProperty("time")
+    Long time;
     @JsonProperty
     List<Map<String, Object>> counters = new LinkedList<Map<String, Object>>();
     @JsonProperty
@@ -38,6 +40,11 @@ class Payload {
 
     public Payload setMeasureTime(long measureTime) {
         this.measureTime = measureTime;
+        return this;
+    }
+
+    public Payload setTime(long time) {
+        this.time = time;
         return this;
     }
 

@@ -33,6 +33,36 @@ public class LibratoClientTest {
     }
 
     @Test
+    public void testTrimsTagName() {
+        long now = System.currentTimeMillis() / 1000;
+        client.postMeasures(new Measures(null, Collections.<Tag>emptyList(), now)
+                .add(new TaggedMeasure("metric-name", 42,
+                        new Tag("tagNametagNametagNametagNametagNametagNametagNametagNametagNameta", // 65 ch
+                                "tagValue"))));
+        assertThat(poster.posts).isEqualTo(asList(
+                new Post(measuresUrl, connectTimeout, timeout, headers, new Payload()
+                        .setTime(now)
+                        .addTagged("metric-name", 42,
+                                new Tag("tagNametagNametagNametagNametagNametagNametagNametagNametagNamet", // 64 ch
+                                        "tagValue")))));
+    }
+
+    @Test
+    public void testTrimsTagValue() throws Exception {
+        long now = System.currentTimeMillis() / 1000;
+        client.postMeasures(new Measures(null, Collections.<Tag>emptyList(), now)
+                .add(new TaggedMeasure("metric-name", 42,
+                        new Tag("tagName",
+                                "tagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValue")))); // 256
+        assertThat(poster.posts).isEqualTo(asList(
+                new Post(measuresUrl, connectTimeout, timeout, headers, new Payload()
+                        .setTime(now)
+                        .addTagged("metric-name", 42,
+                                new Tag("tagName",
+                                        "tagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValuetagValu"))))); // 255
+    }
+
+    @Test
     public void testSendsPeriod() throws Exception {
         long now = System.currentTimeMillis() / 1000;
         client.postMeasures(new Measures("foo", Collections.<Tag>emptyList(), now, 60)

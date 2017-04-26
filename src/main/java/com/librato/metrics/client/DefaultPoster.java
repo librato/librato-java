@@ -44,7 +44,7 @@ public class DefaultPoster implements IPoster {
             }
             if(responseStream == null) {
                 log.info("responseStream null for {} responseCode {}", uri, responseCode);
-                responseBody = "".getBytes();
+                responseBody = new byte[0];
             } else {
                 responseBody = readResponse(responseStream);
             }

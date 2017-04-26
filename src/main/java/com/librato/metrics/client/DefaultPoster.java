@@ -42,7 +42,12 @@ public class DefaultPoster implements IPoster {
             } else {
                 responseStream = connection.getErrorStream();
             }
-            responseBody = readResponse(responseStream);
+            if(responseStream == null) {
+                log.info("responseStream null for {} responseCode {}", uri, responseCode);
+                responseBody = new byte[0];
+            } else {
+                responseBody = readResponse(responseStream);
+            }
             return new HttpResponse() {
                 @Override
                 public int getResponseCode() {

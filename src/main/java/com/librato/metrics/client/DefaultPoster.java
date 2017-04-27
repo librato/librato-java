@@ -43,7 +43,7 @@ public class DefaultPoster implements IPoster {
                 responseStream = connection.getErrorStream();
             }
             if(responseStream == null) {
-                log.info("responseStream null for {} responseCode {}", uri, responseCode);
+                log.warn("responseStream null for {} responseCode {}", uri, responseCode);
                 responseBody = new byte[0];
             } else {
                 responseBody = readResponse(responseStream);

@@ -11,7 +11,7 @@ You can find documentation for versions  < 2.x.x [here](Legacy.md).
     <dependency>
         <groupId>com.librato.metrics</groupId>
         <artifactId>librato-java</artifactId>
-        <version>2.0.5</version>
+        <version>2.1.0</version>
     </dependency>
 
 ## Setup

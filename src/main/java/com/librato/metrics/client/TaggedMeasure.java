@@ -7,7 +7,7 @@ public class TaggedMeasure extends AbstractMeasure {
     private long count;
     private double min;
     private double max;
-    private List<Tag> tags = new LinkedList<Tag>();
+    private List<Tag> tags = new LinkedList<>();
 
     public TaggedMeasure(GaugeMeasure measure) {
         super(measure);
@@ -51,12 +51,12 @@ public class TaggedMeasure extends AbstractMeasure {
     }
 
     private String sanitizeTagValue(String value) {
-        value = Sanitizer.LAST_PASS.apply(value);
+        value = Sanitizer.TAG_VALUE_SANITIZER.apply(value);
         return trimToSize(value, 255);
     }
 
     private String sanitizeTagName(String name) {
-        name = Sanitizer.LAST_PASS.apply(name);
+        name = Sanitizer.TAG_NAME_SANITIZER.apply(name);
         return trimToSize(name, 64);
     }
 

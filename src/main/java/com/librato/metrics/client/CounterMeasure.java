@@ -15,7 +15,7 @@ public class CounterMeasure extends AbstractMeasure {
     public Map<String, Object> toMap() {
         Map<String, Object> map = super.toMap();
         Maps.putIfNotNull(map, "measure_time", epoch);
-        Maps.putIfNotNull(map, "source", Sanitizer.LAST_PASS.apply(source));
+        Maps.putIfNotNull(map, "source", Sanitizer.SOURCE_SANITIZER.apply(source));
         Maps.putIfNotNull(map, "value", value);
         return map;
     }

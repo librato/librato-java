@@ -23,27 +23,7 @@ public class SanitizerTest extends TestCase {
 
         for (final String remove : removeThese) {
             final String testString = "one" + remove + "two";
-            final String sanitized = Sanitizer.NAME_SANITIZER.apply(testString);
-            assertThat(sanitized, equalTo("onetwo"));
-        }
-    }
-
-    public void testSanitizeValues() {
-        final List<String> removeThese = new ArrayList<String>() {{
-            this.add("*");
-            this.add("&");
-            this.add("+");
-            this.add("$");
-            this.add("[");
-            this.add("]");
-            this.add("\t");
-            this.add(" ");
-            this.add("");
-        }};
-
-        for (final String remove : removeThese) {
-            final String testString = "one" + remove + "two";
-            final String sanitized = Sanitizer.VALUE_SANITIZER.apply(testString);
+            final String sanitized = Sanitizer.METRIC_NAME_SANITIZER.apply(testString);
             assertThat(sanitized, equalTo("onetwo"));
         }
     }
@@ -51,7 +31,7 @@ public class SanitizerTest extends TestCase {
     public void testKeepValueSlashes() {
         // had a specific problem involving these...
         final String testString = "one/two";
-        final String sanitized = Sanitizer.VALUE_SANITIZER.apply(testString);
+        final String sanitized = Sanitizer.TAG_VALUE_SANITIZER.apply(testString);
         assertThat(sanitized, equalTo(testString));
     }
 }

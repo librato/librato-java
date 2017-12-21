@@ -105,7 +105,7 @@ public class LibratoClient {
     private byte[] buildSDPayload(Measures measures) {
         final Map<String, Object> payload = new HashMap<String, Object>();
         Maps.putIfNotNull(payload, "measure_time", measures.getEpoch());
-        Maps.putIfNotNull(payload, "source", Sanitizer.VALUE_SANITIZER.apply(measures.getSource()));
+        Maps.putIfNotNull(payload, "source", Sanitizer.SOURCE_SANITIZER.apply(measures.getSource()));
         Maps.putIfNotNull(payload, "period", measures.getPeriod());
         List<Map<String, Object>> gauges = new LinkedList<Map<String, Object>>();
         List<Map<String, Object>> counters = new LinkedList<Map<String, Object>>();

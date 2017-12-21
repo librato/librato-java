@@ -18,18 +18,38 @@ public interface Sanitizer {
     };
 
     /**
-     * Metric names restrictions are described <a href="http://dev.librato.com/v1/metrics">here</a>.
+     * Metric name restrictions are described <a href="http://dev.librato.com/v1/metrics">here</a>.
      */
     @SuppressWarnings("unused")
-    public static final Sanitizer LAST_PASS = new Sanitizer() {
-        private final Pattern disallowedCharacters = Pattern.compile("([^A-Za-z0-9.:\\-_]|[\\[\\]]|\\s)");
-        private final int lengthLimit = 256;
+    public static final Sanitizer NAME_SANITIZER = new Sanitizer() {
+        private final int lengthLimit = 64;
+        // "disallow anything that isn't a word char, dash, dot, colon or underscore"
+        private final Pattern disallowedCharacters = Pattern.compile("[^-.:_\\w]");
 
-        public String apply(String name) {
+        @Override
+        public String apply(final String name) {
             if (name == null) {
                 return null;
             }
             final String sanitized = disallowedCharacters.matcher(name).replaceAll("");
+            if (sanitized.length() > lengthLimit) {
+                return sanitized.substring(sanitized.length() - lengthLimit, sanitized.length());
+            }
+            return sanitized;
+        }
+    };
+
+    @SuppressWarnings("unused")
+    public static final Sanitizer VALUE_SANITIZER = new Sanitizer() {
+        private final int lengthLimit = 256;
+        // "disallow anything that isn't a word char, dash, dot, colon, underscore, question mark or slash"
+        private final Pattern disallowedCharacters = Pattern.compile("[^-.:_?\\\\/\\w ]");
+
+        public String apply(final String value) {
+            if (value == null) {
+                return null;
+            }
+            final String sanitized = disallowedCharacters.matcher(value).replaceAll("");
             if (sanitized.length() > lengthLimit) {
                 return sanitized.substring(sanitized.length() - lengthLimit, sanitized.length());
             }

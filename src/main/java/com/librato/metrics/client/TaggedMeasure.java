@@ -51,12 +51,12 @@ public class TaggedMeasure extends AbstractMeasure {
     }
 
     private String sanitizeTagValue(String value) {
-        value = Sanitizer.LAST_PASS.apply(value);
+        value = Sanitizer.VALUE_SANITIZER.apply(value);
         return trimToSize(value, 255);
     }
 
     private String sanitizeTagName(String name) {
-        name = Sanitizer.LAST_PASS.apply(name);
+        name = Sanitizer.NAME_SANITIZER.apply(name);
         return trimToSize(name, 64);
     }
 

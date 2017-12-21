@@ -17,16 +17,15 @@ public class APIUtilTest {
      */
     @Test
     public void testRemovingIllegalMethods() throws Exception {
-        Sanitizer sanitizer = Sanitizer.LAST_PASS;
+        Sanitizer sanitizer = Sanitizer.VALUE_SANITIZER;
         String important = "reallyclutchinfo";
-        List<String> illegalCharacters = Arrays.asList("$", "]", "[", "*", "+", "\t", " ");
+        List<String> illegalCharacters = Arrays.asList("$", "]", "[", "*", "+", "\t");
 
         StringBuilder testStringBuilder = new StringBuilder();
         testStringBuilder.append("com.less.important.nonunique.prefix.");
         for (int i = 0; i < 32; i++) {
-            Collections.shuffle(illegalCharacters);
             testStringBuilder.append(important);
-            testStringBuilder.append(illegalCharacters.get(0));
+            testStringBuilder.append(illegalCharacters.get(i%6));
         }
 
         String key = testStringBuilder.toString();

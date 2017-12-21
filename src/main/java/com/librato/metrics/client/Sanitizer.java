@@ -7,13 +7,21 @@ import java.util.regex.Pattern;
  */
 public abstract class Sanitizer {
 
-    private static String sanitize(final String unclean, final Pattern disallowedChars, final int maxLength) {
+    private static String sanitize(
+            final String unclean,
+            final Pattern disallowedChars,
+            final int maxLength,
+            final boolean trimFromFront) {
         if (unclean == null) {
             return null;
         }
         final String sanitized = disallowedChars.matcher(unclean).replaceAll("");
         if (sanitized.length() > maxLength) {
-            return sanitized.substring(sanitized.length() - maxLength, sanitized.length());
+            if (trimFromFront) {
+                return sanitized.substring(sanitized.length() - maxLength, sanitized.length());
+            } else {
+                return sanitized.substring(0, maxLength);
+            }
         }
         return sanitized;
     }
@@ -39,7 +47,7 @@ public abstract class Sanitizer {
 
         @Override
         public String apply(final String name) {
-            return sanitize(name, disallowedCharacters, lengthLimit);
+            return sanitize(name, disallowedCharacters, lengthLimit, true);
         }
     };
 
@@ -51,7 +59,7 @@ public abstract class Sanitizer {
 
         @Override
         public String apply(final String name) {
-            return sanitize(name, disallowedCharacters, lengthLimit);
+            return sanitize(name, disallowedCharacters, lengthLimit, false);
         }
     };
 
@@ -63,7 +71,7 @@ public abstract class Sanitizer {
 
         @Override
         public String apply(final String value) {
-            return sanitize(value, disallowedCharacters, lengthLimit);
+            return sanitize(value, disallowedCharacters, lengthLimit, false);
         }
     };
 
@@ -75,7 +83,7 @@ public abstract class Sanitizer {
 
         @Override
         public String apply(final String source) {
-            return sanitize(source, disallowedCharacters, lengthLimit);
+            return sanitize(source, disallowedCharacters, lengthLimit, false);
         }
     };
 

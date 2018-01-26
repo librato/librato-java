@@ -177,12 +177,6 @@ public class LibratoClientTest {
                 LibratoClient.builder("foo@example.com", null).build();
             }
         });
-        ensureIllegalArgument(new Runnable() {
-            @Override
-            public void run() {
-                LibratoClient.builder(null, "token").build();
-            }
-        });
         LibratoClient.builder("foo@example.com", "token").build();
     }
 

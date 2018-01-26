@@ -16,13 +16,16 @@ public class Authorization {
      * @return the Authorization header value
      */
     public static String buildAuthHeader(String username, String token) {
-        if (username == null || "".equals(username)) {
-            throw new IllegalArgumentException("Username must be specified");
-        }
+        String fullToken = "";
         if (token == null || "".equals(token)) {
             throw new IllegalArgumentException("Token must be specified");
         }
-        return String.format("Basic %s", base64Encode((username + ":" + token).getBytes(Charset.forName("UTF-8"))));
+        if (username != null && username.length() > 0) {
+            fullToken += username + ":" + token;
+        } else {
+            fullToken += token + ":";
+        }
+        return String.format("Basic %s", base64Encode((fullToken).getBytes(Charset.forName("UTF-8"))));
     }
 
     private static String base64Encode(byte[] bytes) {

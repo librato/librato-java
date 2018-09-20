@@ -95,7 +95,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <!-- The below specified attribute 'attach' will disable the sources.jar not included in the artifact list -->
+                            <!-- don't attach sources here as the shade plugin will also attach sources -->
                             <attach>false</attach>
                         </configuration>
                     </execution>

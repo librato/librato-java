@@ -1,3 +1,5 @@
+**DEPRECATED:** If you are using [AppOptics](https://www.appoptics.com) please refer to [appoptics-api-java](https://github.com/appoptics/appoptics-api-java).
+
 # librato-java
 
 Java language bindings for the Librato Metrics API.
